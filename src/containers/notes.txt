@@ -1,0 +1,22 @@
+prevTileSelected = []
+
+if boardArray[id].isShown === true
+  exit function
+
+if 0 prevTileSelected
+  boardArray[id].isShown = true
+  prevTileSelected.push(id)
+
+if 1 prevTileSelected
+  boardArray[id].isShown = true
+  prevTileSelected.push(id)
+
+if 2 prevTileSelected
+  check boardArray[prevTileSelected[0]].image
+  === boardArray[prevTileSelected[1]].image
+  if same => prevTileSelected = [id]
+  if diff => 
+    boardArray[prevTileSelected[0]].isShown = false
+    boardArray[prevTileSelected[1]].isShown = false
+    boardArray[id].isShown = true
+    prevTileSelected = [id]

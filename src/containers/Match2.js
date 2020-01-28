@@ -4,15 +4,17 @@ import GameBoard from "../components/GameBoard";
 import gcsResObj from "../gcsResObj";
 import clonedeep from "lodash.clonedeep";
 
-const boardSize = 16;
-const imageRepeated = 2;
+const boardRow = 4;
+const boardCol = 4;
+const boardSize = boardCol * boardRow;
+const imageDuplicates = 2;
 
 class Match2 extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       boardArray: [],
-      prevTileSelected: ""
+      tilesSelected: []
     };
   }
 
@@ -20,7 +22,7 @@ class Match2 extends React.Component {
     const boardArray = Array(boardSize)
       .fill()
       .map((tile, index) => {
-        const picIndex = Math.floor(index / imageRepeated);
+        const picIndex = Math.floor(index / imageDuplicates);
         return {
           isShown: false,
           image: gcsResObj.items[picIndex].image.thumbnailLink
@@ -48,42 +50,31 @@ class Match2 extends React.Component {
 
   handleTileClick = event => {
     const id = Number(event.target.alt);
-    const { boardArray, prevTileSelected } = this.state;
+    const { boardArray, tilesSelected } = this.state;
+    let nextBoardArray = clonedeep(boardArray);
+    let nextTilesSelected = [...tilesSelected];
 
-    // if no previous tile
-    //   => open a close tile or close an open tile
-    // if there is a previous tile
-    //   => compare they are same,
-    //     same do nothing, not same => close both and clear pervious state tile
-
-    this.toggleTile(id);
-    if (prevTileSelected !== "") {
-      if (boardArray[prevTileSelected].image !== boardArray[id].image) {
-        this.toggleTile(prevTileSelected);
-        this.toggleTile(id);
-        this.setState(() => {
-          return { prevTileSelected: "" };
-        });
-      }
-    } else {
-      this.setState(() => {
-        return { prevTileSelected: id };
-      });
-      console.log(this.state);
+    if (boardArray[id].isShown) return;
+    if (tilesSelected.length < imageDuplicates) {
+      nextBoardArray[id].isShown = true;
+      nextTilesSelected.push(id);
     }
-  };
-
-  toggleTile = id => {
-    const copyOfBoardArray = clonedeep(this.state.boardArray).map(tile => {
-      if (tile.id === id) {
-        tile.isShown = !tile.isShown;
+    if (tilesSelected.length === imageDuplicates) {
+      if (
+        boardArray[tilesSelected[0]].image !==
+        boardArray[tilesSelected[1]].image
+      ) {
+        nextBoardArray[tilesSelected[0]].isShown = false;
+        nextBoardArray[tilesSelected[1]].isShown = false;
       }
-      return tile;
-    });
+      nextBoardArray[id].isShown = true;
+      nextTilesSelected = [id];
+    }
 
-    this.setState(() => ({
-      boardArray: copyOfBoardArray
-    }));
+    this.setState({
+      boardArray: nextBoardArray,
+      tilesSelected: nextTilesSelected
+    });
   };
 
   render() {
@@ -92,6 +83,7 @@ class Match2 extends React.Component {
       <div className="match2">
         <GameBoard
           boardArray={boardArray}
+          boardCol={boardCol}
           handleTileClick={this.handleTileClick}
         />
       </div>
