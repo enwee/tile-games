@@ -1,6 +1,6 @@
 import React from "react";
 import "./Match2.css";
-import GameBoard from "../components/GameBoard";
+import Board from "../components/Board";
 import gcsResObj from "../gcsResObj";
 import clonedeep from "lodash.clonedeep";
 
@@ -59,6 +59,11 @@ class Match2 extends React.Component {
       nextBoardArray[id].isShown = true;
       nextTilesSelected.push(id);
     }
+    if (tilesSelected.length === imageDuplicates - 1) {
+      if (boardArray[tilesSelected[0]].image === boardArray[id].image) {
+        this.props.changeQuote();
+      }
+    }
     if (tilesSelected.length === imageDuplicates) {
       if (
         boardArray[tilesSelected[0]].image !==
@@ -81,7 +86,7 @@ class Match2 extends React.Component {
     const { boardArray } = this.state;
     return (
       <div className="match2">
-        <GameBoard
+        <Board
           boardArray={boardArray}
           boardCol={boardCol}
           handleTileClick={this.handleTileClick}

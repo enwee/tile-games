@@ -1,0 +1,8 @@
+.quote {
+  padding: 1rem;
+  margin: auto;
+  width: 20rem;
+  font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
+  font-style: italic;
+  /* transition: s; */
+}

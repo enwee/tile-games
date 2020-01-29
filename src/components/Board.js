@@ -1,8 +1,8 @@
 import React from "react";
-import "./GameBoard.css";
+import "./Board.css";
 import Tile from "./Tile";
 
-const GameBoard = ({ boardArray, boardCol, handleTileClick }) => {
+const Board = ({ boardArray, boardCol, handleTileClick }) => {
   const jsxArray = [];
   boardArray.forEach((tile, index) => {
     jsxArray.push(
@@ -15,10 +15,10 @@ const GameBoard = ({ boardArray, boardCol, handleTileClick }) => {
       />
     );
     if (!((index + 1) % boardCol)) {
-      jsxArray.push(<br />);
+      jsxArray.push(<br key={`br${index}`} />);
     }
   });
   return jsxArray;
 };
 
-export default GameBoard;
+export default Board;
