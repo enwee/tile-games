@@ -2,7 +2,7 @@ import React from "react";
 import "./Board.css";
 import Tile from "./Tile";
 
-const Board = ({ boardArray, boardCol, handleTileClick }) => {
+const Board = ({ boardArray, boardCol, handleTileClick, cheatMode }) => {
   const jsxArray = [];
   boardArray.forEach((tile, index) => {
     jsxArray.push(
@@ -11,6 +11,7 @@ const Board = ({ boardArray, boardCol, handleTileClick }) => {
         isShown={tile.isShown}
         image={tile.image}
         handleTileClick={handleTileClick}
+        cheatMode={cheatMode}
         key={index}
       />
     );

@@ -13,7 +13,9 @@ class Match2 extends React.Component {
     super(props);
     this.state = {
       boardArray: [],
-      tilesSelected: []
+      tilesSelected: [],
+      cheatClickCount: [],
+      cheatMode: false
     };
   }
 
@@ -31,7 +33,7 @@ class Match2 extends React.Component {
       tile.id = index;
       return tile;
     });
-    this.setState(() => ({ boardArray: newBoardArray }));
+    this.setState(() => ({ boardArray: newBoardArray, cheatMode: false }));
   };
 
   boardArrayShuffle = array => {
@@ -54,11 +56,35 @@ class Match2 extends React.Component {
 
   handleTileClick = event => {
     const id = Number(event.target.alt);
-    const { boardArray, tilesSelected } = this.state;
+    const {
+      boardArray,
+      tilesSelected,
+      cheatClickCount,
+      cheatMode
+    } = this.state;
     let nextBoardArray = clonedeep(boardArray);
     let nextTilesSelected = [...tilesSelected];
+    let nextCheatClickCount = [...cheatClickCount];
+    let nextCheatMode = cheatMode;
 
-    if (boardArray[id].isShown) return;
+    if (boardArray[id].isShown) {
+      nextCheatClickCount.push(id);
+      if (nextCheatClickCount.every(tileId => tileId === id)) {
+        if (nextCheatClickCount.length >= 10) {
+          nextCheatMode = !cheatMode;
+          nextCheatClickCount = [];
+        }
+      } else {
+        nextCheatClickCount = [];
+      }
+      this.setState(() => ({
+        cheatMode: nextCheatMode,
+        cheatClickCount: nextCheatClickCount
+      }));
+      return;
+    } else {
+      nextCheatClickCount = [];
+    }
     if (tilesSelected.length < imageDuplicates) {
       nextBoardArray[id].isShown = true;
       nextTilesSelected.push(id);
@@ -79,10 +105,10 @@ class Match2 extends React.Component {
       nextBoardArray[id].isShown = true;
       nextTilesSelected = [id];
     }
-
     this.setState({
       boardArray: nextBoardArray,
-      tilesSelected: nextTilesSelected
+      tilesSelected: nextTilesSelected,
+      cheatClickCount: nextCheatClickCount
     });
   };
 
@@ -98,6 +124,7 @@ class Match2 extends React.Component {
             boardArray={boardArray}
             boardCol={boardCol}
             handleTileClick={this.handleTileClick}
+            cheatMode={this.state.cheatMode}
           />
         </div>
       </div>

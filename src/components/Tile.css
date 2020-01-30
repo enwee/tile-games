@@ -5,3 +5,7 @@
   border: 1px solid black;
   vertical-align: middle;
 }
+
+.opacity {
+  filter: opacity(0.2);
+}
