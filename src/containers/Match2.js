@@ -1,7 +1,6 @@
 import React from "react";
 import "./Match2.css";
 import Board from "../components/Board";
-import gcsResObj from "../gcsResObj";
 import clonedeep from "lodash.clonedeep";
 
 const boardRow = 4;
@@ -19,19 +18,20 @@ class Match2 extends React.Component {
   }
 
   boardArrayInit = () => {
-    const boardArray = Array(boardSize)
+    let newBoardArray = Array(boardSize)
       .fill()
       .map((tile, index) => {
         const picIndex = Math.floor(index / imageDuplicates);
         return {
           isShown: false,
-          image: gcsResObj.items[picIndex].image.thumbnailLink
+          image: this.props.picUrlArray[picIndex]
         };
       });
-    return this.boardArrayShuffle(boardArray).map((tile, index) => {
+    newBoardArray = this.boardArrayShuffle(newBoardArray).map((tile, index) => {
       tile.id = index;
       return tile;
     });
+    this.setState(() => ({ boardArray: newBoardArray }));
   };
 
   boardArrayShuffle = array => {
@@ -43,9 +43,13 @@ class Match2 extends React.Component {
   };
 
   componentDidMount() {
-    this.setState(() => {
-      return { boardArray: this.boardArrayInit() };
-    });
+    this.boardArrayInit();
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.picUrlArray !== prevProps.picUrlArray) {
+      this.boardArrayInit();
+    }
   }
 
   handleTileClick = event => {
@@ -86,11 +90,16 @@ class Match2 extends React.Component {
     const { boardArray } = this.state;
     return (
       <div className="match2">
-        <Board
-          boardArray={boardArray}
-          boardCol={boardCol}
-          handleTileClick={this.handleTileClick}
-        />
+        <div className="resetButton">
+          <button onClick={this.boardArrayInit}>restart</button>
+        </div>
+        <div>
+          <Board
+            boardArray={boardArray}
+            boardCol={boardCol}
+            handleTileClick={this.handleTileClick}
+          />
+        </div>
       </div>
     );
   }
