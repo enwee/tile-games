@@ -23,7 +23,7 @@ class Match2 extends React.Component {
     let newBoardArray = Array(boardSize)
       .fill()
       .map((tile, index) => {
-        const picIndex = Math.floor(index / imageDuplicates);
+        const picIndex = Math.floor(index / imageDuplicates) % 10;
         return {
           isShown: false,
           image: this.props.picUrlArray[picIndex]
@@ -96,6 +96,7 @@ class Match2 extends React.Component {
     }
     if (tilesSelected.length === imageDuplicates) {
       if (
+        //todo a array.every for more than 2 matching
         boardArray[tilesSelected[0]].image !==
         boardArray[tilesSelected[1]].image
       ) {
