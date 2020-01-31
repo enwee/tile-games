@@ -2,7 +2,12 @@
   padding: 1rem;
   margin: auto;
   width: 20rem;
-  font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
+  font-family: serif;
   font-style: italic;
-  /* transition: s; */
+  font-size-adjust: 0.5rem;
+}
+
+.author {
+  font-family: serif;
+  font-size-adjust: 0.5rem;
 }

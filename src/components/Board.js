@@ -3,19 +3,20 @@ import "./Board.css";
 import Tile from "./Tile";
 
 const Board = ({ boardArray, boardCol, handleTileClick, cheatMode }) => {
+  const nonZeroBasedCounting = 1;
   const jsxArray = [];
   boardArray.forEach((tile, index) => {
     jsxArray.push(
       <Tile
-        id={tile.id}
+        tileId={tile.id}
         isShown={tile.isShown}
         image={tile.image}
         handleTileClick={handleTileClick}
         cheatMode={cheatMode}
-        key={index}
+        key={`tile${index}`}
       />
     );
-    if (!((index + 1) % boardCol)) {
+    if (!((index + nonZeroBasedCounting) % boardCol)) {
       jsxArray.push(<br key={`br${index}`} />);
     }
   });

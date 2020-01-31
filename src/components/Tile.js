@@ -1,7 +1,7 @@
 import React from "react";
 import "./Tile.css";
 
-const Tile = ({ id, isShown, image, handleTileClick, cheatMode }) => {
+const Tile = ({ tileId, isShown, image, handleTileClick, cheatMode }) => {
   let classNameString = "tile";
   let imgSrcUrl = isShown ? image : `${process.env.PUBLIC_URL}/logo192.png`;
   if (!isShown && cheatMode) {
@@ -12,8 +12,9 @@ const Tile = ({ id, isShown, image, handleTileClick, cheatMode }) => {
     <img
       className={classNameString}
       src={imgSrcUrl}
-      alt={id}
-      onClick={handleTileClick}
+      alt={`tile${tileId}`}
+      myprop="value"
+      onClick={() => handleTileClick(tileId)}
     />
   );
 };

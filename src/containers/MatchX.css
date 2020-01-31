@@ -1,6 +1,10 @@
-.match2 {
+.matchX {
   display: inline;
 }
 .resetButton {
   display: inline;
+}
+
+.board {
+  padding-top: 1rem;
 }

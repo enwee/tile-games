@@ -3,7 +3,7 @@ import "./QuoteBox.css";
 
 const QuoteBox = ({ quote, author }) => {
   return (
-    <div>
+    <div className="quoteBox">
       <div className="quote">{`' ${quote} '`}</div>
       <div className="author">{`- ${author}`}</div>
     </div>

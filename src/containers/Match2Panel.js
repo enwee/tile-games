@@ -1,6 +1,6 @@
 import React from "react";
 import "./Match2Panel.css";
-import Match2 from "./Match2";
+import MatchX from "./MatchX";
 import QuoteBox from "../components/QuoteBox";
 import axios from "axios";
 import picUrlArray from "../images/picUrlArray";
@@ -83,10 +83,7 @@ class Match2Panel extends React.Component {
           onChange={event => this.setState({ searchText: event.target.value })}
           onKeyPress={this.getPics}
         />
-        <Match2
-          changeQuote={this.getQuote}
-          picUrlArray={this.state.picUrlArray}
-        />
+        <MatchX isMatch={this.getQuote} picUrlArray={this.state.picUrlArray} />
         <QuoteBox quote={this.state.quote} author={this.state.author} />
         <button
           onClick={() =>

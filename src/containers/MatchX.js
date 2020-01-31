@@ -1,15 +1,15 @@
 import React from "react";
-import "./Match2.css";
+import "./MatchX.css";
 import Board from "../components/Board";
 import clonedeep from "lodash.clonedeep";
 
 const boardRow = 4;
 const boardCol = 4;
 const boardSize = boardCol * boardRow;
-const imageDuplicates = 2;
+const picsToMatch = 2;
 
-class Match2 extends React.Component {
-  constructor(props) {
+class MatchX extends React.Component {
+  constructor({ props }) {
     super(props);
     this.state = {
       boardArray: [],
@@ -20,23 +20,28 @@ class Match2 extends React.Component {
   }
 
   boardArrayInit = () => {
-    let newBoardArray = Array(boardSize)
-      .fill()
-      .map((tile, index) => {
-        const picIndex = Math.floor(index / imageDuplicates) % 10;
-        return {
-          isShown: false,
-          image: this.props.picUrlArray[picIndex]
-        };
+    let newBoardArray = [];
+    for (let index = 0; index < boardSize; index++) {
+      const picUrlIndex =
+        Math.floor(index / picsToMatch) % this.props.picUrlArray.length;
+      newBoardArray.push({
+        isShown: false,
+        image: this.props.picUrlArray[picUrlIndex]
       });
-    newBoardArray = this.boardArrayShuffle(newBoardArray).map((tile, index) => {
+    }
+    newBoardArray = this.shuffleArray(newBoardArray).map((tile, index) => {
       tile.id = index;
       return tile;
     });
-    this.setState(() => ({ boardArray: newBoardArray, cheatMode: false }));
+    this.setState(() => ({
+      boardArray: newBoardArray,
+      tilesSelected: [],
+      cheatClickCount: [],
+      cheatMode: false
+    }));
   };
 
-  boardArrayShuffle = array => {
+  shuffleArray = array => {
     for (let i = array.length - 1; i > 0; i--) {
       let j = Math.floor(Math.random() * (i + 1));
       [array[i], array[j]] = [array[j], array[i]];
@@ -54,8 +59,7 @@ class Match2 extends React.Component {
     }
   }
 
-  handleTileClick = event => {
-    const id = Number(event.target.alt);
+  handleTileClick = tileId => {
     const {
       boardArray,
       tilesSelected,
@@ -67,9 +71,9 @@ class Match2 extends React.Component {
     let nextCheatClickCount = [...cheatClickCount];
     let nextCheatMode = cheatMode;
 
-    if (boardArray[id].isShown) {
-      nextCheatClickCount.push(id);
-      if (nextCheatClickCount.every(tileId => tileId === id)) {
+    if (boardArray[tileId].isShown) {
+      nextCheatClickCount.push(tileId);
+      if (nextCheatClickCount.every(prevTileId => prevTileId === tileId)) {
         if (nextCheatClickCount.length >= 10) {
           nextCheatMode = !cheatMode;
           nextCheatClickCount = [];
@@ -85,16 +89,17 @@ class Match2 extends React.Component {
     } else {
       nextCheatClickCount = [];
     }
-    if (tilesSelected.length < imageDuplicates) {
-      nextBoardArray[id].isShown = true;
-      nextTilesSelected.push(id);
+
+    if (tilesSelected.length < picsToMatch) {
+      nextBoardArray[tileId].isShown = true;
+      nextTilesSelected.push(tileId);
     }
-    if (tilesSelected.length === imageDuplicates - 1) {
-      if (boardArray[tilesSelected[0]].image === boardArray[id].image) {
-        this.props.changeQuote();
+    if (tilesSelected.length === picsToMatch - 1) {
+      if (boardArray[tilesSelected[0]].image === boardArray[tileId].image) {
+        this.props.isMatch();
       }
     }
-    if (tilesSelected.length === imageDuplicates) {
+    if (tilesSelected.length === picsToMatch) {
       if (
         //todo a array.every for more than 2 matching
         boardArray[tilesSelected[0]].image !==
@@ -103,8 +108,8 @@ class Match2 extends React.Component {
         nextBoardArray[tilesSelected[0]].isShown = false;
         nextBoardArray[tilesSelected[1]].isShown = false;
       }
-      nextBoardArray[id].isShown = true;
-      nextTilesSelected = [id];
+      nextBoardArray[tileId].isShown = true;
+      nextTilesSelected = [tileId];
     }
     this.setState({
       boardArray: nextBoardArray,
@@ -116,11 +121,11 @@ class Match2 extends React.Component {
   render() {
     const { boardArray } = this.state;
     return (
-      <div className="match2">
+      <div className="matchX">
         <div className="resetButton">
           <button onClick={this.boardArrayInit}>restart</button>
         </div>
-        <div>
+        <div className="board">
           <Board
             boardArray={boardArray}
             boardCol={boardCol}
@@ -133,4 +138,4 @@ class Match2 extends React.Component {
   }
 }
 
-export default Match2;
+export default MatchX;
