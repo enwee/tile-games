@@ -3,13 +3,10 @@ import axios from "axios";
 import MatchX from "./MatchX";
 import QuoteBox from "../components/QuoteBox";
 import WhoButton from "../components/WhoButton";
-import picUrlArray from "../data/picUrlArray";
-import customQuotes from "../data/customQuotes";
+import picUrlArray from "../resources/picUrlArray";
+import customQuotes from "../resources/customQuotes";
+import { quoteAPIurl, gcsAPIurl } from "../constants/index";
 import "./Match2Panel.css";
-
-const quoteAPIurl =
-  "https://programming-quotes-api.herokuapp.com/quotes/lang/en";
-const gcsAPIurl = `https://www.googleapis.com/customsearch/v1?key=${process.env.REACT_APP_SECRET}&cx=${process.env.REACT_APP_G_CUSTOM_SEARCH}&searchType=image&imgSize=large&q=`;
 
 class Match2Panel extends React.Component {
   constructor(props) {
@@ -18,9 +15,8 @@ class Match2Panel extends React.Component {
       searchText: "",
       placeholderText: "Tomatos - Pic Search",
       picUrlArray: picUrlArray,
-      quotesArray: customQuotes,
-      quote: "Loading...",
-      author: "Anonymous"
+      quotesArray: [{ quoteText: "Loading...", author: "Anonymous" }],
+      quoteId: 0
     };
   }
 
@@ -28,36 +24,27 @@ class Match2Panel extends React.Component {
     axios(quoteAPIurl)
       .then(({ data }) => {
         const newQuotesArray = customQuotes.concat(
-          data.map(quote => ({
-            quote: quote.en,
-            author: quote.author
-          }))
+          data.map(quote => ({ quoteText: quote.en, author: quote.author }))
         );
         this.setState(() => ({ quotesArray: newQuotesArray }));
         this.getQuote();
       })
-      .catch(function(error) {
-        // handle error
-        console.log(error);
+      .catch(error => {
+        console.log("getQuotesArray>>>", error);
       })
-      .finally(function() {
+      .finally(() => {
         // always executed
       });
   };
 
   getQuote = () => {
     const quoteId = Math.floor(Math.random() * this.state.quotesArray.length);
-    const { quote, author } = this.state.quotesArray[quoteId];
-    this.setState(() => ({ quote: quote, author: author }));
+    this.setState(() => ({ quoteId: quoteId }));
   };
 
-  customQuote = author => {
-    console.log(author);
+  getCustomQuote = author => {
     const quoteId = Math.floor(Math.random() * customQuotes.length);
-    this.setState(() => ({
-      quote: this.state.quotesArray[quoteId].quote,
-      author: this.state.quotesArray[quoteId].author
-    }));
+    this.setState(() => ({ quoteId: quoteId }));
   };
 
   getPics = event => {
@@ -87,9 +74,9 @@ class Match2Panel extends React.Component {
           searchText: "",
           placeholderText: "Failed to load"
         }));
-        console.log(">>>", error);
+        console.log("getPics>>>", error);
       })
-      .finally(function() {
+      .finally(() => {
         // always executed
       });
   };
@@ -99,6 +86,7 @@ class Match2Panel extends React.Component {
   }
 
   render() {
+    const quote = this.state.quotesArray[this.state.quoteId];
     return (
       <div>
         <input
@@ -110,11 +98,11 @@ class Match2Panel extends React.Component {
         />
         <MatchX isMatch={this.getQuote} picUrlArray={this.state.picUrlArray} />
         <QuoteBox
-          quote={this.state.quote}
-          author={this.state.author}
-          handleClick={this.customQuote}
+          quote={quote.quoteText}
+          author={quote.author}
+          handleClick={this.getCustomQuote}
         />
-        <WhoButton customQuotes={customQuotes} author={this.state.author} />
+        <WhoButton customQuotes={customQuotes} author={quote.author} />
       </div>
     );
   }

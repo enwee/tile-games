@@ -1,8 +1,10 @@
 import React from "react";
+import "./WhoButton.css";
 
 const WhoButton = ({ customQuotes, author }) => {
   return (
     <button
+      className="whoButton"
       onClick={() =>
         window.open(
           customQuotes.map(quote => quote.author).includes(author)

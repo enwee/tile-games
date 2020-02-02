@@ -1,11 +1,15 @@
 .tile {
   height: 5rem;
   width: 5rem;
-  object-fit: cover;
   border: 1px solid black;
   vertical-align: middle;
 }
-
+.cover {
+  object-fit: cover;
+}
+.contain {
+  object-fit: contain;
+}
 .opacity {
   filter: opacity(0.2);
 }

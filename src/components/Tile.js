@@ -1,9 +1,10 @@
 import React from "react";
 import "./Tile.css";
+import reactLogo from "../resources/reactLogo192.png";
 
 const Tile = ({ tileId, isShown, image, handleTileClick, cheatMode }) => {
-  let classNameString = "tile";
-  let imgSrcUrl = isShown ? image : `${process.env.PUBLIC_URL}/logo192.png`;
+  let classNameString = "tile cover"; // contain is also avail
+  let imgSrcUrl = isShown ? image : reactLogo;
   if (!isShown && cheatMode) {
     imgSrcUrl = image;
     classNameString += " opacity";

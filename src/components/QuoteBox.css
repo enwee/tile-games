@@ -1,14 +1,19 @@
+/* @import url(https://fonts.googleapis.com/css?family=Roboto+Mono); */
+
+.quoteBox {
+  font-family: serif;
+  font-size: 1rem;
+}
+
 .quote {
-  padding: 1rem;
+  padding-top: 1rem;
+  padding-bottom: 0.5rem;
   margin: auto;
   width: 20rem;
-  font-family: serif;
   font-style: italic;
-  font-size-adjust: 0.5rem;
 }
 
 .author {
-  font-family: serif;
-  font-size-adjust: 0.5rem;
-  padding-bottom: 0.2rem;
+  padding-bottom: 0.25rem;
+  display: inline;
 }
