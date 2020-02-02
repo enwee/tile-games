@@ -6,8 +6,8 @@ import { checkTenClicks, shuffleArray } from "../resources/functions";
 
 const boardRow = 4;
 const boardCol = 4;
+//const picsToMatch = 10;
 const boardSize = boardCol * boardRow;
-const picsToMatch = 2;
 
 class MatchX extends React.Component {
   constructor({ props }) {
@@ -16,7 +16,8 @@ class MatchX extends React.Component {
       boardArray: [],
       tilesSelected: [],
       clickCount: [],
-      cheatMode: false
+      cheatMode: false,
+      picsToMatch: 2
     };
   }
 
@@ -24,7 +25,8 @@ class MatchX extends React.Component {
     let newBoardArray = [];
     for (let index = 0; index < boardSize; index++) {
       const picUrlIndex =
-        Math.floor(index / picsToMatch) % this.props.picUrlArray.length;
+        Math.floor(index / this.state.picsToMatch) %
+        this.props.picUrlArray.length;
       newBoardArray.push({
         isShown: false,
         image: this.props.picUrlArray[picUrlIndex]
@@ -42,18 +44,14 @@ class MatchX extends React.Component {
     }));
   };
 
-  componentDidMount() {
-    this.boardArrayInit();
-  }
-
-  componentDidUpdate(prevProps) {
-    if (this.props.picUrlArray !== prevProps.picUrlArray) {
-      this.boardArrayInit();
-    }
-  }
-
   handleTileClick = tileId => {
-    const { boardArray, tilesSelected, clickCount, cheatMode } = this.state;
+    const {
+      boardArray,
+      tilesSelected,
+      clickCount,
+      cheatMode,
+      picsToMatch
+    } = this.state;
     let nextBoardArray = clonedeep(boardArray);
     let nextTilesSelected = [...tilesSelected];
     let nextClickCount = [...clickCount];
@@ -73,18 +71,21 @@ class MatchX extends React.Component {
       nextTilesSelected.push(tileId);
     }
     if (tilesSelected.length === picsToMatch - 1) {
-      if (boardArray[tilesSelected[0]].image === boardArray[tileId].image) {
-        this.props.isMatch();
+      if (
+        tilesSelected.every(
+          tile => boardArray[tile].image === boardArray[tileId].image
+        )
+      ) {
+        this.props.isMatch(); //change quote, add point, etc
       }
     }
     if (tilesSelected.length === picsToMatch) {
       if (
-        //todo a array.every for more than 2 matching
-        boardArray[tilesSelected[0]].image !==
-        boardArray[tilesSelected[1]].image
+        !tilesSelected.every(
+          tile => boardArray[tile].image === boardArray[tilesSelected[0]].image
+        )
       ) {
-        nextBoardArray[tilesSelected[0]].isShown = false;
-        nextBoardArray[tilesSelected[1]].isShown = false;
+        tilesSelected.forEach(tile => (nextBoardArray[tile].isShown = false));
       }
       nextBoardArray[tileId].isShown = true;
       nextTilesSelected = [tileId];
@@ -96,10 +97,40 @@ class MatchX extends React.Component {
     });
   };
 
+  componentDidMount() {
+    this.boardArrayInit();
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.props.picUrlArray !== prevProps.picUrlArray) {
+      this.boardArrayInit();
+    }
+    if (this.state.picsToMatch !== prevState.picsToMatch) {
+      this.boardArrayInit();
+    }
+  }
+
   render() {
     const { boardArray } = this.state;
     return (
       <div className="matchX">
+        <div className="matchSelector">
+          <select
+            value={this.state.picsToMatch}
+            onChange={event => {
+              const value = Number(event.target.value);
+              this.setState(() => ({ picsToMatch: value }));
+            }}
+          >
+            <option>2</option>
+            <option>3</option>
+            <option>4</option>
+            <option>5</option>
+            <option>6</option>
+            <option>7</option>
+            <option>8</option>
+          </select>
+        </div>
         <div className="resetButton">
           <button onClick={this.boardArrayInit}>restart</button>
         </div>

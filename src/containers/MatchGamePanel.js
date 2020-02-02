@@ -7,9 +7,9 @@ import picUrlArray from "../resources/picUrlArray";
 import customQuotes from "../resources/customQuotes";
 import { checkTenClicks, shuffleArray } from "../resources/functions";
 import { quoteAPIurl, gcsAPIurl } from "../constants/index";
-import "./Match2Panel.css";
+import "./MatchGamePanel.css";
 
-class Match2Panel extends React.Component {
+class MatchGamePanel extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -117,4 +117,4 @@ class Match2Panel extends React.Component {
   }
 }
 
-export default Match2Panel;
+export default MatchGamePanel;

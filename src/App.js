@@ -1,11 +1,11 @@
 import React from "react";
 import "./App.css";
-import Match2Panel from "./containers/Match2Panel";
+import MatchGamePanel from "./containers/MatchGamePanel";
 
 function App() {
   return (
     <div className="App">
-      <Match2Panel />
+      <MatchGamePanel />
     </div>
   );
 }
