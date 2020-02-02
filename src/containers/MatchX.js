@@ -2,6 +2,7 @@ import React from "react";
 import "./MatchX.css";
 import Board from "../components/Board";
 import clonedeep from "lodash.clonedeep";
+import { checkTenClicks, shuffleArray } from "../resources/functions";
 
 const boardRow = 4;
 const boardCol = 4;
@@ -14,7 +15,7 @@ class MatchX extends React.Component {
     this.state = {
       boardArray: [],
       tilesSelected: [],
-      cheatClickCount: [],
+      clickCount: [],
       cheatMode: false
     };
   }
@@ -29,24 +30,16 @@ class MatchX extends React.Component {
         image: this.props.picUrlArray[picUrlIndex]
       });
     }
-    newBoardArray = this.shuffleArray(newBoardArray).map((tile, index) => {
+    newBoardArray = shuffleArray(newBoardArray).map((tile, index) => {
       tile.id = index;
       return tile;
     });
     this.setState(() => ({
       boardArray: newBoardArray,
       tilesSelected: [],
-      cheatClickCount: [],
+      clickCount: [],
       cheatMode: false
     }));
-  };
-
-  shuffleArray = array => {
-    for (let i = array.length - 1; i > 0; i--) {
-      let j = Math.floor(Math.random() * (i + 1));
-      [array[i], array[j]] = [array[j], array[i]];
-    }
-    return array;
   };
 
   componentDidMount() {
@@ -60,34 +53,19 @@ class MatchX extends React.Component {
   }
 
   handleTileClick = tileId => {
-    const {
-      boardArray,
-      tilesSelected,
-      cheatClickCount,
-      cheatMode
-    } = this.state;
+    const { boardArray, tilesSelected, clickCount, cheatMode } = this.state;
     let nextBoardArray = clonedeep(boardArray);
     let nextTilesSelected = [...tilesSelected];
-    let nextCheatClickCount = [...cheatClickCount];
-    let nextCheatMode = cheatMode;
+    let nextClickCount = [...clickCount];
+    let toggleCheat = false;
 
     if (boardArray[tileId].isShown) {
-      nextCheatClickCount.push(tileId);
-      if (nextCheatClickCount.every(prevTileId => prevTileId === tileId)) {
-        if (nextCheatClickCount.length >= 10) {
-          nextCheatMode = !cheatMode;
-          nextCheatClickCount = [];
-        }
-      } else {
-        nextCheatClickCount = [];
-      }
+      [nextClickCount, toggleCheat] = checkTenClicks(nextClickCount, tileId);
       this.setState(() => ({
-        cheatMode: nextCheatMode,
-        cheatClickCount: nextCheatClickCount
+        cheatMode: toggleCheat ? !cheatMode : cheatMode,
+        clickCount: nextClickCount
       }));
       return;
-    } else {
-      nextCheatClickCount = [];
     }
 
     if (tilesSelected.length < picsToMatch) {
@@ -114,7 +92,7 @@ class MatchX extends React.Component {
     this.setState({
       boardArray: nextBoardArray,
       tilesSelected: nextTilesSelected,
-      cheatClickCount: nextCheatClickCount
+      clickCount: nextClickCount
     });
   };
 

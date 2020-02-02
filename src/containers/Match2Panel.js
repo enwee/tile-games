@@ -5,6 +5,7 @@ import QuoteBox from "../components/QuoteBox";
 import WhoButton from "../components/WhoButton";
 import picUrlArray from "../resources/picUrlArray";
 import customQuotes from "../resources/customQuotes";
+import { checkTenClicks, shuffleArray } from "../resources/functions";
 import { quoteAPIurl, gcsAPIurl } from "../constants/index";
 import "./Match2Panel.css";
 
@@ -16,7 +17,8 @@ class Match2Panel extends React.Component {
       placeholderText: "Tomatos - Pic Search",
       picUrlArray: picUrlArray,
       quotesArray: [{ quoteText: "Loading...", author: "Anonymous" }],
-      quoteId: 0
+      quoteId: 0,
+      clickCount: []
     };
   }
 
@@ -24,7 +26,9 @@ class Match2Panel extends React.Component {
     axios(quoteAPIurl)
       .then(({ data }) => {
         const newQuotesArray = customQuotes.concat(
-          data.map(quote => ({ quoteText: quote.en, author: quote.author }))
+          shuffleArray(
+            data.map(quote => ({ quoteText: quote.en, author: quote.author }))
+          )
         );
         this.setState(() => ({ quotesArray: newQuotesArray }));
         this.getQuote();
@@ -43,13 +47,18 @@ class Match2Panel extends React.Component {
   };
 
   getCustomQuote = author => {
-    const quoteId = Math.floor(Math.random() * customQuotes.length);
-    this.setState(() => ({ quoteId: quoteId }));
+    let nextClickCount = [...this.state.clickCount];
+    let nextQuoteId = this.state.quoteId;
+    let toggleCheat = false;
+    [nextClickCount, toggleCheat] = checkTenClicks(nextClickCount, author);
+    if (toggleCheat) {
+      nextQuoteId = Math.floor(Math.random() * customQuotes.length);
+    }
+    this.setState(() => ({ quoteId: nextQuoteId, clickCount: nextClickCount }));
   };
 
   getPics = event => {
-    const pressReturn = event.type === "keypress" && event.key === "Enter";
-    if (!this.state.searchText || !pressReturn) return;
+    if (!this.state.searchText || !(event.key === "Enter")) return;
 
     axios(`${gcsAPIurl}${this.state.searchText}`)
       .then(({ data }) => {
@@ -102,7 +111,7 @@ class Match2Panel extends React.Component {
           author={quote.author}
           handleClick={this.getCustomQuote}
         />
-        <WhoButton customQuotes={customQuotes} author={quote.author} />
+        <WhoButton quote={quote} />
       </div>
     );
   }

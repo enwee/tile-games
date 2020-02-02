@@ -3,4 +3,6 @@ const quoteAPIurl =
 
 const gcsAPIurl = `https://www.googleapis.com/customsearch/v1?key=${process.env.REACT_APP_SECRET}&cx=${process.env.REACT_APP_G_CUSTOM_SEARCH}&searchType=image&imgSize=large&q=`;
 
-export { quoteAPIurl, gcsAPIurl };
+const wikipediaUrl = "https://en.wikipedia.org/wiki/";
+
+export { quoteAPIurl, gcsAPIurl, wikipediaUrl };

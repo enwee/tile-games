@@ -1,16 +1,13 @@
 import React from "react";
 import "./WhoButton.css";
+import { wikipediaUrl } from "../constants/index";
 
-const WhoButton = ({ customQuotes, author }) => {
+const WhoButton = ({ quote }) => {
   return (
     <button
       className="whoButton"
       onClick={() =>
-        window.open(
-          customQuotes.map(quote => quote.author).includes(author)
-            ? customQuotes.filter(quote => quote.author === author)[0].url
-            : `https://en.wikipedia.org/wiki/${author}`
-        )
+        window.open(!!quote.url ? quote.url : `${wikipediaUrl}${quote.author}`)
       }
     >
       Who's this?
