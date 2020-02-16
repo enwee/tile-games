@@ -148,7 +148,7 @@ class MatchGamePanel extends React.Component {
             boardUpdate={this.boardUpdate}
           />
         ) : (
-          <div>
+          <span>
             <MatchX
               picUrlArray={picUrlArray}
               picsToMatch={picsToMatch}
@@ -162,7 +162,7 @@ class MatchGamePanel extends React.Component {
               handleClick={this.getCustomQuote}
             />
             <WhoButton quote={quotesArray[quoteId]} />
-          </div>
+          </span>
         )}
       </div>
     );

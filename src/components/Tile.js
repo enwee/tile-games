@@ -30,8 +30,11 @@ const Tile = ({
       onClick={() => handleTileClick(tileId)}
       // draggable="true" //images and links are draggable by default
       onDragStart={event => handleDragStart(event, tileId)}
+      onTouchStart={event => handleDragStart(event, tileId)}
       onDragOver={handleDragOver}
+      onTouchMove={handleDragOver}
       onDrop={event => handleDrop(event, tileId)}
+      onTouchEnd={event => handleDrop(event, tileId)}
     />
   );
 };
