@@ -4,7 +4,7 @@ import MatchX from "./MatchX";
 import Settings from "./Settings";
 import QuoteBox from "../components/QuoteBox";
 import WhoButton from "../components/WhoButton";
-import picUrlArray from "../resources/picUrlArray";
+import picDocument from "../resources/picDocument";
 import customQuotes from "../resources/customQuotes";
 import { checkTenClicks, shuffleArray } from "../resources/functions";
 import { quoteAPIurl, gcsAPIurl } from "../constants/index";
@@ -15,14 +15,15 @@ class MatchGamePanel extends React.Component {
     super(props);
     this.state = {
       searchText: "",
-      placeholderText: "Tomatos -2- search",
-      picUrlArray: picUrlArray,
+      picDocName: picDocument.picDocName,
+      picUrlArray: picDocument.picUrlArray,
       picsToMatch: 2,
       boardCol: 4,
       boardRow: 4,
+      showSettings: false,
       quotesArray: [{ quoteText: "Loading...", author: "Anonymous" }],
       quoteId: 0,
-      clickCount: [] //this is not the one in MatchX.js
+      clickCount: [] //this is for quotebox, its not the one in MatchX.js
     };
   }
 
@@ -62,7 +63,7 @@ class MatchGamePanel extends React.Component {
   };
 
   getPics = event => {
-    const { searchText, picsToMatch } = this.state;
+    const { searchText } = this.state;
     if (!searchText || !(event.key === "Enter")) return;
 
     axios(`${gcsAPIurl}${searchText}`)
@@ -77,9 +78,10 @@ class MatchGamePanel extends React.Component {
           }));
         } else {
           this.setState(() => ({
-            picUrlArray: newPicUrlArray,
             searchText: "",
-            placeholderText: `${searchText} -${picsToMatch}- search`
+            //placeholderText: `${searchText} -${picsToMatch}- search`,
+            picDocName: searchText,
+            picUrlArray: newPicUrlArray
           }));
         }
       })
@@ -109,39 +111,59 @@ class MatchGamePanel extends React.Component {
   }
 
   render = () => {
-    const quote = this.state.quotesArray[this.state.quoteId];
+    const {
+      searchText,
+      picDocName,
+      picUrlArray,
+      picsToMatch,
+      boardRow,
+      boardCol,
+      showSettings,
+      quotesArray,
+      quoteId
+    } = this.state;
     return (
       <div>
+        <button onClick={() => this.setState({ showSettings: !showSettings })}>
+          <span role="img" aria-label="settings">
+            ⚙️
+          </span>
+        </button>
         <input
           type="text"
-          placeholder={this.state.placeholderText}
-          value={this.state.searchText}
+          placeholder={`${picDocName} -${picsToMatch}- search`}
+          value={searchText}
           onChange={event =>
             //this.setState(() => ({ searchText: event.target.value }))
             this.setState({ searchText: event.target.value })
           }
           onKeyPress={this.getPics}
         />
-        <MatchX
-          picUrlArray={this.state.picUrlArray}
-          picsToMatch={this.state.picsToMatch}
-          boardCol={this.state.boardCol}
-          boardRow={this.state.boardRow}
-          isMatch={this.getQuote}
-        />
-        <QuoteBox
-          quote={quote.quoteText}
-          author={quote.author}
-          handleClick={this.getCustomQuote}
-        />
-        <WhoButton quote={quote} />
-        {/* <Settings
-          picUrlArray={this.state.picUrlArray}
-          picsToMatch={this.state.picsToMatch}
-          boardCol={this.state.boardCol}
-          boardRow={this.state.boardRow}
-          boardUpdate={this.boardUpdate}
-        /> */}
+        {showSettings ? (
+          <Settings
+            picUrlArray={picUrlArray}
+            picsToMatch={picsToMatch}
+            boardCol={boardCol}
+            boardRow={boardRow}
+            boardUpdate={this.boardUpdate}
+          />
+        ) : (
+          <div>
+            <MatchX
+              picUrlArray={picUrlArray}
+              picsToMatch={picsToMatch}
+              boardCol={boardCol}
+              boardRow={boardRow}
+              isMatch={this.getQuote}
+            />
+            <QuoteBox
+              quote={quotesArray[quoteId].quoteText}
+              author={quotesArray[quoteId].author}
+              handleClick={this.getCustomQuote}
+            />
+            <WhoButton quote={quotesArray[quoteId]} />
+          </div>
+        )}
       </div>
     );
   };

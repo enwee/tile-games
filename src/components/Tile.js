@@ -6,6 +6,7 @@ const Tile = ({
   tileId,
   image,
   isShown,
+  isSelected,
   fitTile,
   cheatMode,
   notUsed,
@@ -16,6 +17,7 @@ const Tile = ({
 }) => {
   let classNameString = "tile".concat(fitTile ? " contain" : " cover");
   let imgSrcUrl = isShown ? image : reactLogo;
+  if (isSelected) classNameString += " selected";
   if ((!isShown && cheatMode) || notUsed) {
     imgSrcUrl = image;
     classNameString += " opacity";

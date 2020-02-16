@@ -22,6 +22,7 @@ class MatchX extends React.Component {
       const picUrlIndex = Math.floor(index / picsToMatch) % picUrlArray.length;
       newBoardArray.push({
         isShown: false,
+        isSelected: false,
         image: picUrlArray[picUrlIndex].image,
         fitTile: picUrlArray[picUrlIndex].fitTile
       });
@@ -56,6 +57,7 @@ class MatchX extends React.Component {
 
     if (tilesSelected.length < this.props.picsToMatch) {
       nextBoardArray[tileId].isShown = true;
+      nextBoardArray[tileId].isSelected = true;
       nextTilesSelected.push(tileId);
     }
     if (tilesSelected.length === this.props.picsToMatch - 1) {
@@ -64,6 +66,9 @@ class MatchX extends React.Component {
           tile => boardArray[tile].image === boardArray[tileId].image
         )
       ) {
+        nextTilesSelected.forEach(
+          tile => (nextBoardArray[tile].isSelected = false)
+        );
         this.props.isMatch(); //change quote, add point, etc
       }
     }
@@ -73,9 +78,13 @@ class MatchX extends React.Component {
           tile => boardArray[tile].image === boardArray[tilesSelected[0]].image
         )
       ) {
-        tilesSelected.forEach(tile => (nextBoardArray[tile].isShown = false));
+        tilesSelected.forEach(tile => {
+          nextBoardArray[tile].isShown = false;
+          nextBoardArray[tile].isSelected = false;
+        });
       }
       nextBoardArray[tileId].isShown = true;
+      nextBoardArray[tileId].isSelected = true;
       nextTilesSelected = [tileId];
     }
     this.setState({

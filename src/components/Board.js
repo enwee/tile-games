@@ -10,6 +10,7 @@ const Board = ({ boardArray, boardCol, handleTileClick, cheatMode }) => {
       <Tile
         tileId={tile.id}
         isShown={tile.isShown}
+        isSelected={tile.isSelected}
         image={tile.image}
         fitTile={tile.fitTile}
         handleTileClick={handleTileClick}

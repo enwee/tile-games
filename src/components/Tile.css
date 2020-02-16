@@ -1,7 +1,7 @@
 .tile {
   height: 5rem;
   width: 5rem;
-  border: 1px solid black;
+  border: 1px solid rgba(210, 219, 224, 0.945);
   vertical-align: middle;
 }
 .cover {
@@ -12,4 +12,7 @@
 }
 .opacity {
   filter: opacity(0.2);
+}
+.selected {
+  border: 1px solid black;
 }
