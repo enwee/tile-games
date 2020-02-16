@@ -2,10 +2,21 @@ import React from "react";
 import "./Tile.css";
 import reactLogo from "../resources/reactLogo192.png";
 
-const Tile = ({ tileId, isShown, image, handleTileClick, cheatMode }) => {
-  let classNameString = "tile cover"; // contain is also avail
+const Tile = ({
+  tileId,
+  image,
+  isShown,
+  fitTile,
+  cheatMode,
+  notUsed,
+  handleTileClick,
+  handleDragStart,
+  handleDragOver,
+  handleDrop
+}) => {
+  let classNameString = "tile".concat(fitTile ? " contain" : " cover");
   let imgSrcUrl = isShown ? image : reactLogo;
-  if (!isShown && cheatMode) {
+  if ((!isShown && cheatMode) || notUsed) {
     imgSrcUrl = image;
     classNameString += " opacity";
   }
@@ -14,8 +25,11 @@ const Tile = ({ tileId, isShown, image, handleTileClick, cheatMode }) => {
       className={classNameString}
       src={imgSrcUrl}
       alt={`tile${tileId}`}
-      myprop="value"
       onClick={() => handleTileClick(tileId)}
+      // draggable="true" //images and links are draggable by default
+      onDragStart={event => handleDragStart(event, tileId)}
+      onDragOver={handleDragOver}
+      onDrop={event => handleDrop(event, tileId)}
     />
   );
 };

@@ -1,0 +1,9 @@
+.Settings .tile {
+  display: block;
+}
+.matchSelector {
+  display: inline-block;
+  /* width: 2rem; */
+  /* overflow: hidden; */
+  /* text-overflow: ellipsis; */
+}

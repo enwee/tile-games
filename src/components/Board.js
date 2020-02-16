@@ -11,7 +11,9 @@ const Board = ({ boardArray, boardCol, handleTileClick, cheatMode }) => {
         tileId={tile.id}
         isShown={tile.isShown}
         image={tile.image}
+        fitTile={tile.fitTile}
         handleTileClick={handleTileClick}
+        handleDragStart={() => {}}
         cheatMode={cheatMode}
         key={`tile${index}`}
       />

@@ -15,6 +15,11 @@ const customQuotes = [
     url: "https://medium.com/@lee.mabel"
   },
   {
+    quoteText: "Joking,joking. \nBlah..blah..blah.. \nOh well....",
+    author: "Mable",
+    url: "https://medium.com/@lee.mabel"
+  },
+  {
     quoteText:
       "It's almost impossible not to think of anything at all, so by concentrating on breathing alone one keeps one's spirit calm",
     author: "Zen Meditation Sensei",

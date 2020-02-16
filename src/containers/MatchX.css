@@ -1,12 +1,6 @@
 .matchX {
   display: inline;
 }
-.matchSelector {
-  display: inline-block;
-  /* width: 2rem; */
-  /* overflow: hidden; */
-  /* text-overflow: ellipsis; */
-}
 .resetButton {
   display: inline;
 }

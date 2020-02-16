@@ -1,6 +1,7 @@
 import React from "react";
 import axios from "axios";
 import MatchX from "./MatchX";
+import Settings from "./Settings";
 import QuoteBox from "../components/QuoteBox";
 import WhoButton from "../components/WhoButton";
 import picUrlArray from "../resources/picUrlArray";
@@ -14,11 +15,14 @@ class MatchGamePanel extends React.Component {
     super(props);
     this.state = {
       searchText: "",
-      placeholderText: "Tomatos - Pic Search",
+      placeholderText: "Tomatos -2- search",
       picUrlArray: picUrlArray,
+      picsToMatch: 2,
+      boardCol: 4,
+      boardRow: 4,
       quotesArray: [{ quoteText: "Loading...", author: "Anonymous" }],
       quoteId: 0,
-      clickCount: []
+      clickCount: [] //this is not the one in MatchX.js
     };
   }
 
@@ -58,12 +62,13 @@ class MatchGamePanel extends React.Component {
   };
 
   getPics = event => {
-    if (!this.state.searchText || !(event.key === "Enter")) return;
+    const { searchText, picsToMatch } = this.state;
+    if (!searchText || !(event.key === "Enter")) return;
 
-    axios(`${gcsAPIurl}${this.state.searchText}`)
+    axios(`${gcsAPIurl}${searchText}`)
       .then(({ data }) => {
         const newPicUrlArray = data.items.map(item => {
-          return item.image.thumbnailLink;
+          return { image: item.image.thumbnailLink, fitTile: false };
         });
         if (newPicUrlArray.length < 10) {
           this.setState(() => ({
@@ -74,7 +79,7 @@ class MatchGamePanel extends React.Component {
           this.setState(() => ({
             picUrlArray: newPicUrlArray,
             searchText: "",
-            placeholderText: `${this.state.searchText} - Pics Search`
+            placeholderText: `${searchText} -${picsToMatch}- search`
           }));
         }
       })
@@ -90,11 +95,20 @@ class MatchGamePanel extends React.Component {
       });
   };
 
+  boardUpdate = (picUrlArray, picsToMatch, boardCol, boardRow) => {
+    this.setState(() => ({
+      picUrlArray: picUrlArray,
+      picsToMatch: picsToMatch,
+      boardCol: boardCol,
+      boardRow: boardRow
+    }));
+  };
+
   componentDidMount() {
     this.getQuotesArray();
   }
 
-  render() {
+  render = () => {
     const quote = this.state.quotesArray[this.state.quoteId];
     return (
       <div>
@@ -102,19 +116,35 @@ class MatchGamePanel extends React.Component {
           type="text"
           placeholder={this.state.placeholderText}
           value={this.state.searchText}
-          onChange={event => this.setState({ searchText: event.target.value })}
+          onChange={event =>
+            //this.setState(() => ({ searchText: event.target.value }))
+            this.setState({ searchText: event.target.value })
+          }
           onKeyPress={this.getPics}
         />
-        <MatchX isMatch={this.getQuote} picUrlArray={this.state.picUrlArray} />
+        <MatchX
+          picUrlArray={this.state.picUrlArray}
+          picsToMatch={this.state.picsToMatch}
+          boardCol={this.state.boardCol}
+          boardRow={this.state.boardRow}
+          isMatch={this.getQuote}
+        />
         <QuoteBox
           quote={quote.quoteText}
           author={quote.author}
           handleClick={this.getCustomQuote}
         />
         <WhoButton quote={quote} />
+        {/* <Settings
+          picUrlArray={this.state.picUrlArray}
+          picsToMatch={this.state.picsToMatch}
+          boardCol={this.state.boardCol}
+          boardRow={this.state.boardRow}
+          boardUpdate={this.boardUpdate}
+        /> */}
       </div>
     );
-  }
+  };
 }
 
 export default MatchGamePanel;

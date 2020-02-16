@@ -4,32 +4,26 @@ import Board from "../components/Board";
 import clonedeep from "lodash.clonedeep";
 import { checkTenClicks, shuffleArray } from "../resources/functions";
 
-const boardRow = 4;
-const boardCol = 4;
-//const picsToMatch = 10;
-const boardSize = boardCol * boardRow;
-
 class MatchX extends React.Component {
-  constructor({ props }) {
+  constructor(props) {
     super(props);
     this.state = {
       boardArray: [],
       tilesSelected: [],
       clickCount: [],
-      cheatMode: false,
-      picsToMatch: 2
+      cheatMode: false
     };
   }
 
   boardArrayInit = () => {
+    const { picUrlArray, picsToMatch, boardRow, boardCol } = this.props;
     let newBoardArray = [];
-    for (let index = 0; index < boardSize; index++) {
-      const picUrlIndex =
-        Math.floor(index / this.state.picsToMatch) %
-        this.props.picUrlArray.length;
+    for (let index = 0; index < boardRow * boardCol; index++) {
+      const picUrlIndex = Math.floor(index / picsToMatch) % picUrlArray.length;
       newBoardArray.push({
         isShown: false,
-        image: this.props.picUrlArray[picUrlIndex]
+        image: picUrlArray[picUrlIndex].image,
+        fitTile: picUrlArray[picUrlIndex].fitTile
       });
     }
     newBoardArray = shuffleArray(newBoardArray).map((tile, index) => {
@@ -45,13 +39,7 @@ class MatchX extends React.Component {
   };
 
   handleTileClick = tileId => {
-    const {
-      boardArray,
-      tilesSelected,
-      clickCount,
-      cheatMode,
-      picsToMatch
-    } = this.state;
+    const { boardArray, tilesSelected, clickCount, cheatMode } = this.state;
     let nextBoardArray = clonedeep(boardArray);
     let nextTilesSelected = [...tilesSelected];
     let nextClickCount = [...clickCount];
@@ -66,11 +54,11 @@ class MatchX extends React.Component {
       return;
     }
 
-    if (tilesSelected.length < picsToMatch) {
+    if (tilesSelected.length < this.props.picsToMatch) {
       nextBoardArray[tileId].isShown = true;
       nextTilesSelected.push(tileId);
     }
-    if (tilesSelected.length === picsToMatch - 1) {
+    if (tilesSelected.length === this.props.picsToMatch - 1) {
       if (
         tilesSelected.every(
           tile => boardArray[tile].image === boardArray[tileId].image
@@ -79,7 +67,7 @@ class MatchX extends React.Component {
         this.props.isMatch(); //change quote, add point, etc
       }
     }
-    if (tilesSelected.length === picsToMatch) {
+    if (tilesSelected.length === this.props.picsToMatch) {
       if (
         !tilesSelected.every(
           tile => boardArray[tile].image === boardArray[tilesSelected[0]].image
@@ -102,42 +90,26 @@ class MatchX extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (this.props.picUrlArray !== prevProps.picUrlArray) {
-      this.boardArrayInit();
-    }
-    if (this.state.picsToMatch !== prevState.picsToMatch) {
+    if (
+      this.props.picUrlArray !== prevProps.picUrlArray ||
+      this.props.picsToMatch !== prevProps.picsToMatch ||
+      this.props.boardRow !== prevProps.boardRow ||
+      this.props.boardCol !== prevProps.boardCol
+    ) {
       this.boardArrayInit();
     }
   }
 
   render() {
-    const { boardArray } = this.state;
     return (
       <div className="matchX">
-        <div className="matchSelector">
-          <select
-            value={this.state.picsToMatch}
-            onChange={event => {
-              const value = Number(event.target.value);
-              this.setState(() => ({ picsToMatch: value }));
-            }}
-          >
-            <option>2</option>
-            <option>3</option>
-            <option>4</option>
-            <option>5</option>
-            <option>6</option>
-            <option>7</option>
-            <option>8</option>
-          </select>
-        </div>
         <div className="resetButton">
           <button onClick={this.boardArrayInit}>restart</button>
         </div>
         <div className="board">
           <Board
-            boardArray={boardArray}
-            boardCol={boardCol}
+            boardArray={this.state.boardArray}
+            boardCol={this.props.boardCol}
             handleTileClick={this.handleTileClick}
             cheatMode={this.state.cheatMode}
           />
