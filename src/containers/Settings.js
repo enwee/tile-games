@@ -39,41 +39,51 @@ class Settings extends React.Component {
   render = () => {
     const { picUrlArray, picsToMatch, boardCol, boardRow } = this.props;
     return (
-      <div className="Settings">
-        {["picsToMatch", "boardCol", "boardRow"].map(select => (
-          <NumSelector
-            select={select}
-            picUrlArray={picUrlArray}
-            picsToMatch={picsToMatch}
-            boardCol={boardCol}
-            boardRow={boardRow}
-            boardUpdate={this.props.boardUpdate}
-            key={select}
-          />
-        ))}
-
-        {picUrlArray.map((tile, index) => (
-          <div key={`setting${index}`}>
-            <Tile
-              tileId={index}
-              isShown="true"
-              image={tile.image}
-              fitTile={tile.fitTile}
-              notUsed={index >= Math.ceil((boardCol * boardRow) / picsToMatch)}
-              handleTileClick={() => {}}
-              handleDragStart={this.handleDragStart}
-              handleDragOver={this.handleDragOver}
-              handleDrop={this.handleDrop}
-            />
-            <input
-              type="checkbox"
-              id={index}
-              checked={tile.fitTile}
-              onChange={() => this.checkboxChange(index)}
-            />
-            <label>Show Full Pic</label>
-          </div>
-        ))}
+      <div className="settings">
+        <div className="numSelector">
+          {["picsToMatch", "boardCol", "boardRow"].map(select => (
+            <span key={select}>
+              <span>{select === "picsToMatch" ? "Match" : ""}</span>
+              <span>{select === "boardCol" ? "Columns" : ""}</span>
+              <span>{select === "boardRow" ? "Rows" : ""}</span>
+              <NumSelector
+                select={select}
+                picUrlArray={picUrlArray}
+                picsToMatch={picsToMatch}
+                boardCol={boardCol}
+                boardRow={boardRow}
+                boardUpdate={this.props.boardUpdate}
+                key={select}
+              />
+            </span>
+          ))}
+        </div>
+        <div className="tiles">
+          {picUrlArray.map((tile, index) => (
+            <div key={`tile${index}`}>
+              <input
+                type="checkbox"
+                id={index}
+                checked={tile.fitTile}
+                onChange={() => this.checkboxChange(index)}
+              />
+              <label>{`${index + 1}. `}</label>
+              <Tile
+                tileId={index}
+                isShown="true"
+                image={tile.image}
+                fitTile={tile.fitTile}
+                notUsed={
+                  index >= Math.ceil((boardCol * boardRow) / picsToMatch)
+                }
+                handleTileClick={() => {}}
+                handleDragStart={this.handleDragStart}
+                handleDragOver={this.handleDragOver}
+                handleDrop={this.handleDrop}
+              />
+            </div>
+          ))}
+        </div>
       </div>
     );
   };

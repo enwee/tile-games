@@ -1,9 +1,11 @@
-.Settings .tile {
-  display: block;
+.settings {
+  display: inline;
 }
-.matchSelector {
-  display: inline-block;
-  /* width: 2rem; */
-  /* overflow: hidden; */
-  /* text-overflow: ellipsis; */
+
+.numSelector {
+  padding: 1rem;
+}
+
+.tiles {
+  column-count: 4;
 }
