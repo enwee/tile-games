@@ -5,7 +5,7 @@ import Settings from "./Settings";
 import QuoteBox from "../components/QuoteBox";
 import WhoButton from "../components/WhoButton";
 import picDocument from "../resources/picDocument";
-import customQuotes from "../resources/customQuotes";
+import quoteSet from "../resources/customQuotes";
 import { checkTenClicks, shuffleArray } from "../resources/functions";
 import { quoteAPIurl, gcsAPIurl } from "../constants/index";
 import "./MatchGamePanel.css";
@@ -21,7 +21,7 @@ class MatchGamePanel extends React.Component {
       boardCol: 4,
       boardRow: 4,
       showSettings: false,
-      quotesArray: [{ quoteText: "Loading...", author: "Anonymous" }],
+      quotesArray: [{ quote: "Loading...", author: "Anonymous" }],
       quoteId: 0,
       clickCount: [] //this is for quotebox, its not the one in MatchX.js
     };
@@ -30,11 +30,7 @@ class MatchGamePanel extends React.Component {
   getQuotesArray = () => {
     axios(quoteAPIurl)
       .then(({ data }) => {
-        const newQuotesArray = customQuotes.concat(
-          shuffleArray(
-            data.map(quote => ({ quoteText: quote.en, author: quote.author }))
-          )
-        );
+        const newQuotesArray = quoteSet.quotes.concat(shuffleArray(data));
         this.setState(() => ({ quotesArray: newQuotesArray }));
         this.getQuote();
       })
@@ -57,7 +53,7 @@ class MatchGamePanel extends React.Component {
     let toggleCheat = false;
     [nextClickCount, toggleCheat] = checkTenClicks(nextClickCount, author);
     if (toggleCheat) {
-      nextQuoteId = Math.floor(Math.random() * customQuotes.length);
+      nextQuoteId = Math.floor(Math.random() * quoteSet.quotes.length);
     }
     this.setState(() => ({ quoteId: nextQuoteId, clickCount: nextClickCount }));
   };
@@ -157,7 +153,7 @@ class MatchGamePanel extends React.Component {
               isMatch={this.getQuote}
             />
             <QuoteBox
-              quote={quotesArray[quoteId].quoteText}
+              quote={quotesArray[quoteId].quote}
               author={quotesArray[quoteId].author}
               handleClick={this.getCustomQuote}
             />

@@ -6,9 +6,7 @@ const WhoButton = ({ quote }) => {
   return (
     <button
       className="whoButton"
-      onClick={() =>
-        window.open(!!quote.url ? quote.url : `${wikipediaUrl}${quote.author}`)
-      }
+      onClick={() => window.open(quote.url || `${wikipediaUrl}${quote.author}`)}
     >
       Who's this?
     </button>

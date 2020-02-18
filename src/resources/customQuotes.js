@@ -1,6 +1,6 @@
-const quoteDocument = {
-  quoteDocName: "Custom",
-  quoteArray: [
+const quoteSet = {
+  name: "Custom",
+  quotes: [
     {
       quote: "We usually build things to solve our own problems",
       author: "Jesstern",
@@ -30,4 +30,4 @@ const quoteDocument = {
   ]
 };
 
-export default quoteDocument;
+export default quoteSet;
