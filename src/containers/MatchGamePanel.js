@@ -37,9 +37,7 @@ class MatchGamePanel extends React.Component {
       .catch(error => {
         console.log("getQuotesArray>>>", error);
       })
-      .finally(() => {
-        // always executed
-      });
+      .finally(() => {}); // always executed
   };
 
   getQuote = () => {
@@ -64,18 +62,15 @@ class MatchGamePanel extends React.Component {
 
     axios(`${gcsAPIurl}${searchText}`)
       .then(({ data }) => {
-        const newPicUrlArray = data.items.map(item => {
-          return { image: item.image.thumbnailLink, fitTile: false };
-        });
-        if (newPicUrlArray.length < 10) {
-          this.setState(() => ({
-            searchText: "",
-            placeholderText: "Can't Find 10 pics"
-          }));
+        if (data.items.length < 10) {
+          this.setState(() => ({ searchText: "" })); //"Can't Find 10 pics"
         } else {
+          const newPicUrlArray = data.items.map(item => ({
+            image: item.image.thumbnailLink,
+            fitTile: false
+          }));
           this.setState(() => ({
             searchText: "",
-            //placeholderText: `${searchText} -${picsToMatch}- search`,
             picDocName: searchText,
             picUrlArray: newPicUrlArray
           }));
@@ -83,14 +78,11 @@ class MatchGamePanel extends React.Component {
       })
       .catch(error => {
         this.setState(() => ({
-          searchText: "",
-          placeholderText: "Failed to load"
+          searchText: "" //"Failed to load"
         }));
         console.log("getPics>>>", error);
       })
-      .finally(() => {
-        // always executed
-      });
+      .finally(() => {}); // always executed
   };
 
   boardUpdate = (picUrlArray, picsToMatch, boardCol, boardRow) => {
