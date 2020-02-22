@@ -1,10 +1,11 @@
 import React from "react";
 import axios from "axios";
+import uuidv4 from "uuid/v4";
 import MatchX from "./MatchX";
 import Settings from "./Settings";
 import QuoteBox from "../components/QuoteBox";
-import WhoButton from "../components/WhoButton";
-import picDocument from "../resources/picDocument";
+import Button from "../components/Button";
+import picSet1 from "../resources/picSet1";
 import quoteSet from "../resources/customQuotes";
 import { checkTenClicks, shuffleArray } from "../resources/functions";
 import { quoteAPIurl, gcsAPIurl } from "../constants/index";
@@ -15,8 +16,8 @@ class MatchGamePanel extends React.Component {
     super(props);
     this.state = {
       searchText: "",
-      picDocName: picDocument.picDocName,
-      picUrlArray: picDocument.picUrlArray,
+      picSetNameId: { name: picSet1.name, id: picSet1.id },
+      picArray: picSet1.pics,
       picsToMatch: 2,
       boardCol: 4,
       boardRow: 4,
@@ -56,38 +57,46 @@ class MatchGamePanel extends React.Component {
     this.setState(() => ({ quoteId: nextQuoteId, clickCount: nextClickCount }));
   };
 
-  getPics = event => {
+  getPicArray = event => {
     const { searchText } = this.state;
     if (!searchText || !(event.key === "Enter")) return;
 
     axios(`${gcsAPIurl}${searchText}`)
       .then(({ data }) => {
         if (data.items.length < 10) {
-          this.setState(() => ({ searchText: "" })); //"Can't Find 10 pics"
+          this.setState(() => ({ searchText: "" })); //"Can't Find 10 pics" msg?
         } else {
-          const newPicUrlArray = data.items.map(item => ({
+          const newPicArray = data.items.map(item => ({
             image: item.image.thumbnailLink,
-            fitTile: false
+            fitTile: false,
+            id: uuidv4()
           }));
           this.setState(() => ({
             searchText: "",
-            picDocName: searchText,
-            picUrlArray: newPicUrlArray
+            picSetNameId: { name: searchText, id: uuidv4() },
+            picArray: newPicArray
           }));
         }
       })
       .catch(error => {
         this.setState(() => ({
-          searchText: "" //"Failed to load"
+          searchText: "" //"Failed to load" msg to user??
         }));
         console.log("getPics>>>", error);
       })
       .finally(() => {}); // always executed
   };
 
-  boardUpdate = (picUrlArray, picsToMatch, boardCol, boardRow) => {
+  updateGameState = ({
+    picSetNameId,
+    picArray,
+    picsToMatch,
+    boardCol,
+    boardRow
+  }) => {
     this.setState(() => ({
-      picUrlArray: picUrlArray,
+      picSetNameId: picSetNameId,
+      picArray: picArray,
       picsToMatch: picsToMatch,
       boardCol: boardCol,
       boardRow: boardRow
@@ -101,8 +110,8 @@ class MatchGamePanel extends React.Component {
   render = () => {
     const {
       searchText,
-      picDocName,
-      picUrlArray,
+      picSetNameId,
+      picArray,
       picsToMatch,
       boardRow,
       boardCol,
@@ -119,26 +128,27 @@ class MatchGamePanel extends React.Component {
         </button>
         <input
           type="text"
-          placeholder={`${picDocName} -${picsToMatch}- search`}
+          placeholder={`${picSetNameId.name} -${picsToMatch}- search`}
           value={searchText}
           onChange={event =>
             //this.setState(() => ({ searchText: event.target.value }))
             this.setState({ searchText: event.target.value })
           }
-          onKeyPress={this.getPics}
+          onKeyPress={this.getPicArray}
         />
         {showSettings ? (
           <Settings
-            picUrlArray={picUrlArray}
+            picSetNameId={picSetNameId}
+            picArray={picArray}
             picsToMatch={picsToMatch}
             boardCol={boardCol}
             boardRow={boardRow}
-            boardUpdate={this.boardUpdate}
+            updateGameState={this.updateGameState}
           />
         ) : (
           <span>
             <MatchX
-              picUrlArray={picUrlArray}
+              picArray={picArray}
               picsToMatch={picsToMatch}
               boardCol={boardCol}
               boardRow={boardRow}
@@ -149,7 +159,7 @@ class MatchGamePanel extends React.Component {
               author={quotesArray[quoteId].author}
               handleClick={this.getCustomQuote}
             />
-            <WhoButton quote={quotesArray[quoteId]} />
+            <Button quote={quotesArray[quoteId]}>Who's this?</Button>
           </span>
         )}
       </div>

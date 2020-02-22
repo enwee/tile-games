@@ -16,15 +16,15 @@ class MatchX extends React.Component {
   }
 
   boardArrayInit = () => {
-    const { picUrlArray, picsToMatch, boardRow, boardCol } = this.props;
+    const { picArray, picsToMatch, boardRow, boardCol } = this.props;
     let newBoardArray = [];
     for (let index = 0; index < boardRow * boardCol; index++) {
-      const picUrlIndex = Math.floor(index / picsToMatch) % picUrlArray.length;
+      const picArrayIndex = Math.floor(index / picsToMatch) % picArray.length;
       newBoardArray.push({
         isShown: false,
         isSelected: false,
-        image: picUrlArray[picUrlIndex].image,
-        fitTile: picUrlArray[picUrlIndex].fitTile
+        image: picArray[picArrayIndex].image,
+        fitTile: picArray[picArrayIndex].fitTile
       });
     }
     newBoardArray = shuffleArray(newBoardArray).map((tile, index) => {
@@ -100,7 +100,7 @@ class MatchX extends React.Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (
-      this.props.picUrlArray !== prevProps.picUrlArray ||
+      this.props.picArray !== prevProps.picArray ||
       this.props.picsToMatch !== prevProps.picsToMatch ||
       this.props.boardRow !== prevProps.boardRow ||
       this.props.boardCol !== prevProps.boardCol

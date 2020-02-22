@@ -2,10 +2,14 @@
   display: inline;
 }
 
+.numSelectorGroup {
+  padding: 1rem;
+}
+
 .numSelector {
   padding: 1rem;
 }
 
 .tiles {
-  column-count: 5;
+  column-count: 4;
 }

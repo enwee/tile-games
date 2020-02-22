@@ -1,14 +1,16 @@
 import React from "react";
+import axios from "axios";
+import SelectorList from "../components/SelectorList";
 import Tile from "../components/Tile";
+import Button from "../components/Button";
+import { backEndUrl } from "../constants/index";
 import "./Settings.css";
-import clonedeep from "lodash.clonedeep";
-import NumSelector from "../components/NumSelector";
 
 class Settings extends React.Component {
-  // constructor(props) {
-  //   super(props);
-  //   this.state = {};
-  // }
+  constructor(props) {
+    super(props);
+    this.state = { picsList: [{ name: "Loading..." }] };
+  }
 
   handleDragStart = (event, tileDragged) => {
     event.dataTransfer.setData("text/plain", tileDragged);
@@ -21,45 +23,111 @@ class Settings extends React.Component {
 
   handleDrop = (event, tileDropOn) => {
     event.preventDefault();
-    const { picUrlArray, picsToMatch, boardCol, boardRow } = this.props;
+    const { updateGameState, picArray, ...rest } = this.props;
     const tileDragged = Number(event.dataTransfer.getData("text/plain"));
-    const nextpicUrlArray = clonedeep(picUrlArray);
-    [nextpicUrlArray[tileDragged], nextpicUrlArray[tileDropOn]] = 
-    [nextpicUrlArray[tileDropOn], nextpicUrlArray[tileDragged]]; //prettier-ignore
-    this.props.boardUpdate(nextpicUrlArray, picsToMatch, boardCol, boardRow);
+    //const nextPicArray = clonedeep(picArray);
+    //cannot use this even though not supposed to change prop directly
+    //but updateGameState (destructures as {picArray})
+    //it wont see nextPicArray, yet need to keep it as picArray,
+    //for other cases of updateGameState where row/col/etc is changed
+    [picArray[tileDragged], picArray[tileDropOn]] = 
+    [picArray[tileDropOn], picArray[tileDragged]]; //prettier-ignore
+    updateGameState({ picArray, ...rest });
   };
 
   checkboxChange = index => {
-    const { picUrlArray, picsToMatch, boardCol, boardRow } = this.props;
-    const nextpicUrlArray = clonedeep(picUrlArray);
-    nextpicUrlArray[index].fitTile = !picUrlArray[index].fitTile;
-    this.props.boardUpdate(nextpicUrlArray, picsToMatch, boardCol, boardRow);
+    const { updateGameState, picArray, ...rest } = this.props;
+    picArray[index].fitTile = !picArray[index].fitTile;
+    updateGameState({ picArray, ...rest });
   };
 
+  getPicsList = () => {
+    axios(`${backEndUrl}/pics`)
+      .then(({ data }) => {
+        this.setState({ picsList: data });
+      })
+      .catch(error => {
+        console.log(error);
+      })
+      .finally(() => {}); // always executed
+  };
+
+  getPicSet = id => {
+    let { updateGameState, picSetNameId, picArray, ...rest } = this.props;
+    axios(`${backEndUrl}/pics/${id}`)
+      .then(({ data: picSet }) => {
+        picSetNameId = { name: picSet.name, id: picSet.id };
+        picArray = picSet.pics;
+        updateGameState({ picSetNameId, picArray, ...rest });
+      })
+      .catch(error => {
+        console.log(error);
+      })
+      .finally(() => {}); // always executed
+  };
+
+  savePicsArray = (picSetNameId, picArray) => {
+    const picSet = {
+      id: picSetNameId.id,
+      name: picSetNameId.name,
+      user: "fromfrontend",
+      pics: picArray
+    };
+    axios
+      .put(`${backEndUrl}/pics/${picSetNameId.id}`, picSet)
+      .catch(error => {
+        console.log(error);
+      })
+      .finally(() => {}); // always executed
+  };
+
+  componentDidMount = () => {
+    this.getPicsList();
+  };
+
+  // componentDidUpdate = (prevProps, prevState) => {
+  //   if (prevProps) {
+  //   }
+  //   //this.getPicsList();
+  // };
+
   render = () => {
-    const { picUrlArray, picsToMatch, boardCol, boardRow } = this.props;
+    const {
+      updateGameState,
+      picSetNameId,
+      picArray,
+      picsToMatch,
+      boardCol,
+      boardRow
+    } = this.props;
     return (
       <div className="settings">
-        <div className="numSelector">
-          {["picsToMatch", "boardCol", "boardRow"].map(select => (
-            <span key={select}>
-              <span>{select === "picsToMatch" ? "Match" : ""}</span>
-              <span>{select === "boardCol" ? "Columns" : ""}</span>
-              <span>{select === "boardRow" ? "Rows" : ""}</span>
-              <NumSelector
-                select={select}
-                picUrlArray={picUrlArray}
+        <div className="numSelectorGroup">
+          {[
+            { name: "picsToMatch", choices: [2, 3, 4, 5, 6, 7, 8] },
+            { name: "boardCol", choices: [4, 5, 6, 7, 8] },
+            { name: "boardRow", choices: [4, 5, 6, 7, 8] }
+          ].map(selecting => (
+            <span className="numSelector" key={selecting.name}>
+              <label>{selecting.name === "picsToMatch" ? "Match" : ""}</label>
+              <label>{selecting.name === "boardCol" ? "Columns" : ""}</label>
+              <label>{selecting.name === "boardRow" ? "Rows" : ""}</label>
+              <SelectorList
+                selecting={selecting.name}
+                choices={selecting.choices}
+                values={selecting.choices}
+                picSetNameId={picSetNameId}
+                picArray={picArray}
                 picsToMatch={picsToMatch}
                 boardCol={boardCol}
                 boardRow={boardRow}
-                boardUpdate={this.props.boardUpdate}
-                key={select}
+                updateGameState={updateGameState}
               />
             </span>
           ))}
         </div>
         <div className="tiles">
-          {picUrlArray.map((tile, index) => (
+          {picArray.map((tile, index) => (
             <div key={`tile${index}`}>
               <input
                 type="checkbox"
@@ -67,7 +135,6 @@ class Settings extends React.Component {
                 checked={tile.fitTile}
                 onChange={() => this.checkboxChange(index)}
               />
-              <label>{`${index + 1}. `}</label>
               <Tile
                 tileId={index}
                 isShown="true"
@@ -83,6 +150,20 @@ class Settings extends React.Component {
               />
             </div>
           ))}
+          <SelectorList
+            selecting="picSetNameId"
+            choices={this.state.picsList.map(pic => pic.name)}
+            values={this.state.picsList.map(pic => pic.id)}
+            getPicSet={this.getPicSet}
+          />
+          <br />
+          <Button
+            picSetNameId={picSetNameId}
+            picArray={picArray}
+            savePicsArray={this.savePicsArray}
+          >
+            Save
+          </Button>
         </div>
       </div>
     );
