@@ -123,7 +123,7 @@ class MatchGamePanel extends React.Component {
       <div>
         <button onClick={() => this.setState({ showSettings: !showSettings })}>
           <span role="img" aria-label="settings">
-            ⚙️
+            {showSettings ? "Play" : "⚙️"}
           </span>
         </button>
         <input

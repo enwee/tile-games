@@ -4,12 +4,13 @@ import SelectorList from "../components/SelectorList";
 import Tile from "../components/Tile";
 import Button from "../components/Button";
 import { backEndUrl } from "../constants/index";
+import picSet1 from "../resources/picSet1";
 import "./Settings.css";
 
 class Settings extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { picsList: [{ name: "Loading..." }] };
+    this.state = { picsList: [{ name: "Loading..." }], unsaved: false };
   }
 
   handleDragStart = (event, tileDragged) => {
@@ -28,12 +29,14 @@ class Settings extends React.Component {
     [picArray[tileDragged], picArray[tileDropOn]] = 
     [picArray[tileDropOn], picArray[tileDragged]]; //prettier-ignore
     updateGameState({ picArray, ...rest });
+    //this.setState({ unsaved: true }); // but not good enough
   };
 
   checkboxChange = index => {
     const { updateGameState, picArray, ...rest } = this.props;
     picArray[index].fitTile = !picArray[index].fitTile;
     updateGameState({ picArray, ...rest });
+    //this.setState({ unsaved: true }); // but not good enough
   };
 
   getPicsList = () => {
@@ -49,12 +52,14 @@ class Settings extends React.Component {
 
   getDbPicSet = id => {
     let { updateGameState, picSetNameId, picArray, ...rest } = this.props;
-    axios(`${backEndUrl}/pics/${id}`)
+    axios
+      .get(`${backEndUrl}/pics/${id}`)
       .then(({ data: picSet }) => {
         const { pics, ...theRest } = picSet;
         picSetNameId = { ...theRest };
         picArray = pics;
         updateGameState({ picSetNameId, picArray, ...rest });
+        this.setState({ unsaved: false });
       })
       .catch(error => {
         console.log(error);
@@ -62,7 +67,7 @@ class Settings extends React.Component {
       .finally(() => {}); // always executed
   };
 
-  savePicsArray = (picSetNameId, picArray) => {
+  savePicSet = (picSetNameId, picArray) => {
     const picSet = {
       id: picSetNameId.id,
       name: picSetNameId.name,
@@ -71,6 +76,22 @@ class Settings extends React.Component {
     };
     axios
       .put(`${backEndUrl}/pics/${picSetNameId.id}`, picSet)
+      .then(() => {
+        this.getPicsList();
+        this.setState({ unsaved: false });
+      }) //statement vs function?
+      .catch(error => {
+        console.log(error);
+      })
+      .finally(() => {}); // always executed
+  };
+  deletePicSet = picSetNameId => {
+    axios
+      .delete(`${backEndUrl}/pics/${picSetNameId.id}`)
+      .then(() => {
+        this.getDbPicSet(picSet1.id);
+        this.getPicsList();
+      })
       .catch(error => {
         console.log(error);
       })
@@ -80,6 +101,11 @@ class Settings extends React.Component {
   componentDidMount = () => {
     this.getPicsList();
   };
+
+  // componentDidUpdate = prevProps => {
+  //   if (this.props.picArray !== prevProps.picArray)
+  //     this.setState({ unsaved: true });
+  // };
 
   render = () => {
     const {
@@ -148,13 +174,24 @@ class Settings extends React.Component {
             getDbPicSet={this.getDbPicSet}
           />
           <br />
+          {/* {this.state.unsaved ? ( */}
           <Button
             picSetNameId={picSetNameId}
             picArray={picArray}
-            savePicsArray={this.savePicsArray}
+            savePicSet={this.savePicSet}
           >
             Save
           </Button>
+          {/* ) : (
+            ""
+          )} */}
+          {/* {this.state.loggedin ? ( */}
+          <Button picSetNameId={picSetNameId} deletePicSet={this.deletePicSet}>
+            Delete
+          </Button>
+          {/* ) : (
+            ""
+          )} */}
         </div>
       </div>
     );
