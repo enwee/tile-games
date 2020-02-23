@@ -25,11 +25,6 @@ class Settings extends React.Component {
     event.preventDefault();
     const { updateGameState, picArray, ...rest } = this.props;
     const tileDragged = Number(event.dataTransfer.getData("text/plain"));
-    //const nextPicArray = clonedeep(picArray);
-    //cannot use this even though not supposed to change prop directly
-    //but updateGameState (destructures as {picArray})
-    //it wont see nextPicArray, yet need to keep it as picArray,
-    //for other cases of updateGameState where row/col/etc is changed
     [picArray[tileDragged], picArray[tileDropOn]] = 
     [picArray[tileDropOn], picArray[tileDragged]]; //prettier-ignore
     updateGameState({ picArray, ...rest });
@@ -52,12 +47,13 @@ class Settings extends React.Component {
       .finally(() => {}); // always executed
   };
 
-  getPicSet = id => {
+  getDbPicSet = id => {
     let { updateGameState, picSetNameId, picArray, ...rest } = this.props;
     axios(`${backEndUrl}/pics/${id}`)
       .then(({ data: picSet }) => {
-        picSetNameId = { name: picSet.name, id: picSet.id };
-        picArray = picSet.pics;
+        const { pics, ...theRest } = picSet;
+        picSetNameId = { ...theRest };
+        picArray = pics;
         updateGameState({ picSetNameId, picArray, ...rest });
       })
       .catch(error => {
@@ -84,12 +80,6 @@ class Settings extends React.Component {
   componentDidMount = () => {
     this.getPicsList();
   };
-
-  // componentDidUpdate = (prevProps, prevState) => {
-  //   if (prevProps) {
-  //   }
-  //   //this.getPicsList();
-  // };
 
   render = () => {
     const {
@@ -151,10 +141,11 @@ class Settings extends React.Component {
             </div>
           ))}
           <SelectorList
-            selecting="picSetNameId"
+            selecting="dbPicSet"
             choices={this.state.picsList.map(pic => pic.name)}
             values={this.state.picsList.map(pic => pic.id)}
-            getPicSet={this.getPicSet}
+            picSetNameId={picSetNameId}
+            getDbPicSet={this.getDbPicSet}
           />
           <br />
           <Button

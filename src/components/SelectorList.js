@@ -6,34 +6,41 @@ const SelectorList = props => {
     choices,
     values,
     picList,
-    updateGameState,
-    getPicSet,
+    picSetSelected,
     picsToMatch,
     boardCol,
     boardRow,
+    updateGameState,
+    getDbPicSet,
     ...rest
   } = props;
   const propsToUpdate = { picsToMatch, boardCol, boardRow };
+  const MCR = ["picsToMatch", "boardCol", "boardRow"].includes(selecting);
+  const isDbPicSet = choices.includes(props.picSetNameId.name);
+  const isNewSet = !MCR && !isDbPicSet;
   return (
     <span>
-      {/* <input list={selecting} />
-      <datalist id={selecting}></datalist> */}
       <select
+        value={MCR ? props[selecting] : props.picSetNameId.id}
         onChange={event => {
           const selected = event.target.value;
-          if (["picsToMatch", "boardCol", "boardRow"].includes(selecting)) {
+
+          if (MCR) {
             propsToUpdate[selecting] = Number(selected);
             updateGameState({ ...propsToUpdate, ...rest });
-          } else getPicSet(selected);
+          }
+          if (selecting === "dbPicSet") {
+            getDbPicSet(selected);
+          }
         }}
       >
+        {isNewSet ? <option>{props.picSetNameId.name}</option> : ""}
         {choices.map((choice, index) => (
           <option value={values[index]} key={choice}>
             {choice}
           </option>
         ))}
       </select>
-      {/* <option></option> */}
     </span>
   );
 };

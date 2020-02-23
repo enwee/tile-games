@@ -7,12 +7,9 @@ const Button = ({ quote, children, picSetNameId, picArray, savePicsArray }) => {
     <button
       className="Button"
       onClick={() => {
-        if (children === "Who's this?") {
+        if (children === "Who's this?")
           window.open(quote.url || `${wikipediaUrl}${quote.author}`);
-        }
-        if (children === "Save") {
-          savePicsArray(picSetNameId, picArray);
-        }
+        if (children === "Save") savePicsArray(picSetNameId, picArray);
       }}
     >
       {children}
