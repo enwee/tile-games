@@ -1,4 +1,5 @@
 import React from "react";
+import { unDeleteableIds } from "../constants/index";
 
 const SelectorList = props => {
   const {
@@ -16,7 +17,7 @@ const SelectorList = props => {
   } = props;
   const propsToUpdate = { picsToMatch, boardCol, boardRow };
   const MCR = ["picsToMatch", "boardCol", "boardRow"].includes(selecting);
-  const isDbPicSet = choices.includes(props.picSetNameId.name);
+  const isDbPicSet = values.includes(props.picSetNameId.id);
   const isNewSet = !MCR && !isDbPicSet;
   return (
     <span>
@@ -34,10 +35,11 @@ const SelectorList = props => {
           }
         }}
       >
-        {isNewSet ? <option>{props.picSetNameId.name}</option> : ""}
+        {isNewSet ? <option>{`${props.picSetNameId.name}*`}</option> : ""}
         {choices.map((choice, index) => (
-          <option value={values[index]} key={choice}>
+          <option value={values[index]} key={index}>
             {choice}
+            {unDeleteableIds.includes(values[index]) ? "⊛" : ""}
           </option>
         ))}
       </select>
