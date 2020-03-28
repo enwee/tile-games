@@ -3,7 +3,7 @@ import axios from "axios";
 import SelectorList from "../components/SelectorList";
 import Tile from "../components/Tile";
 import Button from "../components/Button";
-import { backEndUrl } from "../constants/index";
+import { backEndUrl } from "../resources/constants";
 import picSet1 from "../resources/picSet1";
 import "./Settings.css";
 

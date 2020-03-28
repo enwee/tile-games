@@ -1,9 +1,6 @@
 const backEndUrl = "https://tile-games.herokuapp.com";
-const quoteAPIurl = `${backEndUrl}/quotes/Programming`;
-
-const gcsAPIurl = `https://www.googleapis.com/customsearch/v1?key=${process.env.REACT_APP_SECRET}&cx=${process.env.REACT_APP_G_CUSTOM_SEARCH}&searchType=image&imgSize=large&safe=active&q=`;
-
 const wikipediaUrl = "https://en.wikipedia.org/wiki/";
+const gcsAPIurl = `https://www.googleapis.com/customsearch/v1?key=${process.env.REACT_APP_SECRET}&cx=${process.env.REACT_APP_G_CUSTOM_SEARCH}&searchType=image&imgSize=large&safe=active&q=`;
 
 const unDeleteableIds = [
   "984b6f93-bc67-4395-9ab7-95e97ad80918", //Colors
@@ -13,4 +10,4 @@ const unDeleteableIds = [
   "2447fbbc-0f5f-455b-ab27-d86ee283895f" //Tomatos
 ];
 
-export { backEndUrl, quoteAPIurl, gcsAPIurl, wikipediaUrl, unDeleteableIds };
+export { backEndUrl, wikipediaUrl, gcsAPIurl, unDeleteableIds };
