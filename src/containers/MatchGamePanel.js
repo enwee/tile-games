@@ -22,7 +22,7 @@ class MatchGamePanel extends React.Component {
       boardCol: 4,
       boardRow: 4,
       showSettings: false,
-      quotesArray: [{ quote: "Loading... <br> (~20secs for server wakeup~)", author: "Anonymous" }],
+      quotesArray: [{ quote: "Loading... (~20secs if server asleep~)", author: "Anonymous" }],
       quoteId: 0,
       clickCount: [] //this is for quotebox, its not the one in MatchX.js
     };
