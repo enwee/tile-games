@@ -29,3 +29,13 @@ Edit the .env.example and rename to .env
 `npm start`
 
 The app now runs in development mode at http://localhost:3000
+
+## Work in Progress / Todo
+- refactor quote component to be selectable by catergory
+- improve layout UI
+- make UI desktop/ mobile aware
+- have user login feature
+- have user pic storage/ dragable to picset
+- make drag and drop work on mobile
+- use react router 
+- more games whack-a-mole/ jigsaw
