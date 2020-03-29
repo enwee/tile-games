@@ -31,6 +31,8 @@ Edit the .env.example and rename to .env
 
 The app now runs in development mode at http://localhost:3000
 
+The repository for the REST API server is at https://github.com/enwee/tile-games-server 
+
 ## Work in Progress / Todo
 - refactor quote component to be selectable by catergory
 - improve layout UI
