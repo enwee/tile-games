@@ -1,68 +1,31 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Tile Matching Game
 
-## Available Scripts
+## Description
 
-In the project directory, you can run:
+The aim of this game is to click on 2 tiles with the same picture for a match. When a match occurs, the quotation below the game board changes to a new one.
 
-### `npm start`
+If there is no match, and upon clicking the next tile, the picture behind that tile will be shown and the previous 2 that did not match will restore to be unshown.
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Above the game board is a google image search input box. [Enter] must be pressed for the search to happen and the tiles will be populated with the images according to the search words.
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+The button beside the image search box goes to a settings page. Here the user can set how many same pictures have to be choosen for a match and the number of columns and rows of the game board.
 
-### `npm test`
+The set of pictures can also be reordered on the settings page by mouse drag and drop and there is a checkbox for each picture to choose if the picture is shrunk to fit the tile space.
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+These picture sets can be saved and retrieved for future sessions of the game
 
-### `npm run build`
+## Getting Started
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+This project Requires Node.js v12.16.1
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+Run the following commands on the console
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+`git clone https://github.com/enwee/tile-games.git`
 
-### `npm run eject`
+`npm install`
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+Edit the .env.example and rename to .env
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+`npm start`
 
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+The app now runs in development mode at http://localhost:3000
