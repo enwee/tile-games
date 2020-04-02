@@ -18,7 +18,8 @@ class MatchGamePanel extends React.Component {
       picsToMatch: 2,
       boardCol: 4,
       boardRow: 4,
-      showSettings: false
+      showSettings: false,
+      score: 0
     };
   }
 
@@ -52,20 +53,8 @@ class MatchGamePanel extends React.Component {
       .finally(() => {}); // always executed
   };
 
-  updateGameState = ({
-    picSetNameId,
-    picArray,
-    picsToMatch,
-    boardCol,
-    boardRow
-  }) => {
-    this.setState(() => ({
-      picSetNameId: picSetNameId,
-      picArray: picArray,
-      picsToMatch: picsToMatch,
-      boardCol: boardCol,
-      boardRow: boardRow
-    }));
+  updateGameState = gameStateObject => {
+    this.setState(gameStateObject);
   };
 
   render = () => {
@@ -76,7 +65,8 @@ class MatchGamePanel extends React.Component {
       picsToMatch,
       boardRow,
       boardCol,
-      showSettings
+      showSettings,
+      score
     } = this.state;
     return (
       <div>
@@ -89,10 +79,7 @@ class MatchGamePanel extends React.Component {
           type="text"
           placeholder={`${picSetNameId.name} -${picsToMatch}- search`}
           value={searchText}
-          onChange={event =>
-            //this.setState(() => ({ searchText: event.target.value }))
-            this.setState({ searchText: event.target.value })
-          }
+          onChange={event => this.setState({ searchText: event.target.value })}
           onKeyPress={this.getPicArray}
         />
         {showSettings ? (
@@ -105,20 +92,16 @@ class MatchGamePanel extends React.Component {
             updateGameState={this.updateGameState}
           />
         ) : (
-          <span>
+          <>
             <MatchX
               picArray={picArray}
               picsToMatch={picsToMatch}
               boardCol={boardCol}
               boardRow={boardRow}
-              isMatch={this.getQuote}
+              isMatch={() => this.setState({ score: score + 1 })}
             />
-            <QuoteBox
-            // quote={quotesArray[quoteId].quote}
-            // author={quotesArray[quoteId].author}
-            // handleClick={this.getCustomQuote}
-            />
-          </span>
+            <QuoteBox score={score} />
+          </>
         )}
       </div>
     );
