@@ -1,5 +1,4 @@
 const backEndUrl = process.env.REACT_APP_BACKEND_URL;
-const quoteAPIurl = `${backEndUrl}/quotes/Programming`;
 
 const gcsAPIurl = `https://www.googleapis.com/customsearch/v1?key=${process.env.REACT_APP_SECRET}&cx=${process.env.REACT_APP_G_CUSTOM_SEARCH}&searchType=image&imgSize=large&safe=active&q=`;
 
@@ -13,4 +12,4 @@ const unDeleteableIds = [
   "2447fbbc-0f5f-455b-ab27-d86ee283895f" //Tomatos
 ];
 
-export { backEndUrl, quoteAPIurl, gcsAPIurl, wikipediaUrl, unDeleteableIds };
+export { backEndUrl, wikipediaUrl, gcsAPIurl, unDeleteableIds };

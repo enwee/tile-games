@@ -1,6 +1,6 @@
 import React from "react";
 import "./Button.css";
-import { wikipediaUrl } from "../constants/index";
+import { wikipediaUrl } from "../resources/constants";
 
 const Button = ({
   quote,

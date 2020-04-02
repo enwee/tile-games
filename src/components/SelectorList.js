@@ -1,5 +1,5 @@
 import React from "react";
-import { unDeleteableIds } from "../constants/index";
+import { unDeleteableIds } from "../resources/constants";
 
 const SelectorList = props => {
   const {

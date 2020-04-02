@@ -3,7 +3,7 @@ import axios from "axios";
 import SelectorList from "../components/SelectorList";
 import Tile from "../components/Tile";
 import Button from "../components/Button";
-import { backEndUrl } from "../constants/index";
+import { backEndUrl } from "../resources/constants";
 import picSet1 from "../resources/picSet1";
 import "./Settings.css";
 
@@ -24,18 +24,18 @@ class Settings extends React.Component {
 
   handleDrop = (event, tileDropOn) => {
     event.preventDefault();
-    const { updateGameState, picArray, ...rest } = this.props;
+    const { updateGameState, picArray } = this.props;
     const tileDragged = Number(event.dataTransfer.getData("text/plain"));
     [picArray[tileDragged], picArray[tileDropOn]] = 
     [picArray[tileDropOn], picArray[tileDragged]]; //prettier-ignore
-    updateGameState({ picArray, ...rest });
+    updateGameState({ picArray });
     //this.setState({ unsaved: true }); // but not good enough
   };
 
   checkboxChange = index => {
-    const { updateGameState, picArray, ...rest } = this.props;
+    const { updateGameState, picArray } = this.props;
     picArray[index].fitTile = !picArray[index].fitTile;
-    updateGameState({ picArray, ...rest });
+    updateGameState({ picArray });
     //this.setState({ unsaved: true }); // but not good enough
   };
 
@@ -51,14 +51,14 @@ class Settings extends React.Component {
   };
 
   getDbPicSet = id => {
-    let { updateGameState, picSetNameId, picArray, ...rest } = this.props;
+    let { updateGameState, picSetNameId, picArray } = this.props;
     axios
       .get(`${backEndUrl}/pics/${id}`)
       .then(({ data: picSet }) => {
-        const { pics, ...theRest } = picSet;
-        picSetNameId = { ...theRest };
+        const { pics, ...rest } = picSet;
+        picSetNameId = { ...rest };
         picArray = pics;
-        updateGameState({ picSetNameId, picArray, ...rest });
+        updateGameState({ picSetNameId, picArray });
         this.setState({ unsaved: false });
       })
       .catch(error => {
