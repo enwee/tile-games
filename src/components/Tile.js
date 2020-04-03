@@ -4,9 +4,9 @@ import reactLogo from "../resources/reactLogo192.png";
 
 const Tile = ({
   tileId,
-  image,
   isShown,
   isSelected,
+  image,
   fitTile,
   cheatMode,
   notUsed,

@@ -19,7 +19,8 @@ class MatchGamePanel extends React.Component {
       boardCol: 4,
       boardRow: 4,
       showSettings: false,
-      score: 0
+      score: 0,
+      quoteCategory: "Programming"
     };
   }
 
@@ -66,7 +67,8 @@ class MatchGamePanel extends React.Component {
       boardRow,
       boardCol,
       showSettings,
-      score
+      score,
+      quoteCategory
     } = this.state;
     return (
       <div>
@@ -90,6 +92,7 @@ class MatchGamePanel extends React.Component {
             boardCol={boardCol}
             boardRow={boardRow}
             updateGameState={this.updateGameState}
+            quoteCategory={quoteCategory}
           />
         ) : (
           <>
@@ -100,7 +103,7 @@ class MatchGamePanel extends React.Component {
               boardRow={boardRow}
               isMatch={() => this.setState({ score: score + 1 })}
             />
-            <QuoteBox score={score} />
+            <QuoteBox score={score} quoteCategory={quoteCategory} />
           </>
         )}
       </div>

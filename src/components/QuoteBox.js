@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Button from "../components/Button";
-import quoteSet from "../resources/customQuotes";
 import { backEndUrl } from "../resources/constants";
 import { checkTenClicks } from "../resources/functions";
 import "./QuoteBox.css";
 
-const QuoteBox = score => {
+const QuoteBox = ({ score, quoteCategory }) => {
   const [quotesArray, setQuotesArray] = useState([
     { quote: "Loading...", author: "Anonymous" }
   ]);
@@ -14,21 +13,18 @@ const QuoteBox = score => {
   const [clickCount, setClickCount] = useState([]);
 
   useEffect(() => {
-    axios(`${backEndUrl}/quotes/Programming`)
-      .then(({ data }) => {
-        const newQuotesArray = quoteSet.quotes.concat(data);
-        setQuotesArray(newQuotesArray);
-      })
+    axios(`${backEndUrl}/quotes/${quoteCategory}`)
+      .then(({ data }) => setQuotesArray(data))
       .catch(error => {
         console.log("getQuotesArray>>>", error);
       })
       .finally(); // always executed
-  }, []);
+  }, [quoteCategory]);
 
   useEffect(() => {
     const quoteId = Math.floor(Math.random() * quotesArray.length);
     setQuoteId(quoteId);
-  }, [quotesArray.length, score]);
+  }, [quotesArray, score]);
 
   const getCustomQuote = author => {
     let nextClickCount = clickCount;
@@ -36,7 +32,7 @@ const QuoteBox = score => {
     let toggleCheat = false;
     [nextClickCount, toggleCheat] = checkTenClicks(nextClickCount, author);
     if (toggleCheat) {
-      nextQuoteId = Math.floor(Math.random() * quoteSet.quotes.length);
+      nextQuoteId = Math.floor(Math.random() * quotesArray.length);
     }
     setQuoteId(nextQuoteId);
     setClickCount(nextClickCount);
@@ -48,9 +44,7 @@ const QuoteBox = score => {
       <div
         className="author"
         onClick={() => getCustomQuote(quotesArray[quoteId].author)}
-      >
-        {`- ${quotesArray[quoteId].author}`}
-      </div>
+      >{`- ${quotesArray[quoteId].author}`}</div>
       <br />
       <Button quote={quotesArray[quoteId]}>Who's this?</Button>
     </div>

@@ -10,7 +10,11 @@ import "./Settings.css";
 class Settings extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { picsList: [{ name: "Loading..." }], unsaved: false };
+    this.state = {
+      picsList: [{ name: "Loading..." }],
+      quoteCatergories: ["Loading..."],
+      unsaved: false
+    };
   }
 
   handleDragStart = (event, tileDragged) => {
@@ -43,6 +47,17 @@ class Settings extends React.Component {
     axios(`${backEndUrl}/pics`)
       .then(({ data }) => {
         this.setState({ picsList: data });
+      })
+      .catch(error => {
+        console.log(error);
+      })
+      .finally(() => {}); // always executed
+  };
+
+  getQuotesCategories = () => {
+    axios(`${backEndUrl}/quotes`)
+      .then(({ data }) => {
+        this.setState({ quoteCatergories: data });
       })
       .catch(error => {
         console.log(error);
@@ -100,6 +115,7 @@ class Settings extends React.Component {
 
   componentDidMount = () => {
     this.getPicsList();
+    this.getQuotesCategories();
   };
 
   // componentDidUpdate = prevProps => {
@@ -114,7 +130,8 @@ class Settings extends React.Component {
       picArray,
       picsToMatch,
       boardCol,
-      boardRow
+      boardRow,
+      quoteCategory
     } = this.props;
     return (
       <div className="settings">
@@ -166,6 +183,8 @@ class Settings extends React.Component {
               />
             </div>
           ))}
+          <br />
+          Picture Set
           <SelectorList
             selecting="dbPicSet"
             choices={this.state.picsList.map(pic => pic.name)}
@@ -174,7 +193,6 @@ class Settings extends React.Component {
             getDbPicSet={this.getDbPicSet}
           />
           <br />
-          {/* {this.state.unsaved ? ( */}
           <Button
             picSetNameId={picSetNameId}
             picArray={picArray}
@@ -182,16 +200,22 @@ class Settings extends React.Component {
           >
             Save
           </Button>
-          {/* ) : (
-            ""
-          )} */}
-          {/* {this.state.loggedin ? ( */}
           <Button picSetNameId={picSetNameId} deletePicSet={this.deletePicSet}>
             Delete
           </Button>
-          {/* ) : (
-            ""
-          )} */}
+          <br />
+          <br />
+          Quote Category
+          <select
+            value={quoteCategory}
+            onChange={event =>
+              updateGameState({ quoteCategory: event.target.value })
+            }
+          >
+            {this.state.quoteCatergories.map(category => (
+              <option key={category}>{category}</option>
+            ))}
+          </select>
         </div>
       </div>
     );

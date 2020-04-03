@@ -13,9 +13,9 @@ const Board = ({ boardArray, boardCol, handleTileClick, cheatMode }) => {
         isSelected={tile.isSelected}
         image={tile.image}
         fitTile={tile.fitTile}
+        cheatMode={cheatMode}
         handleTileClick={handleTileClick}
         handleDragStart={() => {}}
-        cheatMode={cheatMode}
         key={`tile${index}`}
       />
     );
