@@ -185,6 +185,7 @@ class Settings extends React.Component {
           ))}
           <br />
           Picture Set
+          <br />
           <SelectorList
             selecting="dbPicSet"
             choices={this.state.picsList.map(pic => pic.name)}
@@ -206,6 +207,7 @@ class Settings extends React.Component {
           <br />
           <br />
           Quote Category
+          <br />
           <select
             value={quoteCategory}
             onChange={event =>
